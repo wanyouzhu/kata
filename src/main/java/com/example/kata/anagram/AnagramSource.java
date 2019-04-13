@@ -16,7 +16,7 @@ class AnagramSource {
         this.words = Lists.newArrayList(words);
     }
 
-    Stream<Anagram> readAnagrams() {
+    Stream<Anagram> list() {
         return indexCartesianProduct().filter(x -> !Objects.equals(x.getLeft(), x.getRight())).map(this::getAnagram);
     }
 

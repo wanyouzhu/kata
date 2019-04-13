@@ -37,9 +37,9 @@ public class AnagramTests {
 
     @Test
     public void testResolveAnagrams() {
-        assertThat(new AnagramResolver().resolveAnagrams("documenting", ImmutableSet.of("do", "men")), is(ImmutableSet.of(new Anagram("do", "men"), new Anagram("men", "do"))));
-        assertThat(new AnagramResolver().resolveAnagrams("test", ImmutableSet.of("do", "men")), is(ImmutableSet.of()));
-        assertThat(new AnagramResolver().resolveAnagrams("documenting", ImmutableSet.of("do", "in", "ego")), is(ImmutableSet.of(
+        assertThat(new AnagramResolver().resolve("documenting", ImmutableSet.of("do", "men")), is(ImmutableSet.of(new Anagram("do", "men"), new Anagram("men", "do"))));
+        assertThat(new AnagramResolver().resolve("test", ImmutableSet.of("do", "men")), is(ImmutableSet.of()));
+        assertThat(new AnagramResolver().resolve("documenting", ImmutableSet.of("do", "in", "ego")), is(ImmutableSet.of(
                 new Anagram("do", "in"),
                 new Anagram("in", "do"), new Anagram("in", "ego"),
                 new Anagram("ego", "in")
@@ -48,11 +48,11 @@ public class AnagramTests {
 
     @Test
     public void testResolveAnagramsFromActualWordList() {
-        Set<Anagram> resolved = new AnagramResolver().resolveAnagrams("documenting", AnagramWordSet.loadWordList());
+        Set<Anagram> resolved = new AnagramResolver().resolve("documenting", AnagramWordSet.loadWordList());
         assertThat(resolved, is(not(empty())));
     }
 
     private Set<Anagram> listAnagramCandidates(ImmutableSet<String> source) {
-        return new AnagramSource(source).readAnagrams().collect(Collectors.toSet());
+        return new AnagramSource(source).list().collect(Collectors.toSet());
     }
 }
