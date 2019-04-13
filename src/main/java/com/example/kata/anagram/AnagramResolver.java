@@ -5,8 +5,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class AnagramResolver {
-    Set<Anagram> resolve(String source, Set<String> words) {
-        Stream<Anagram> candidates = new AnagramSource(words).list();
+    private final AnagramSource anagramSource;
+
+    AnagramResolver(AnagramSource anagramSource) {
+        this.anagramSource = anagramSource;
+    }
+
+    Set<Anagram> resolve(String source) {
+        Stream<Anagram> candidates = anagramSource.generateCandidates();
         return candidates.filter(anagram -> anagram.match(source)).collect(Collectors.toSet());
     }
 }
