@@ -1,12 +1,12 @@
 package com.example.kata.anagram;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
-import java.util.List;
+import java.util.Set;
 
 class AnagramWordSet {
-    static List<String> loadWordList() {
-        return ImmutableList.of(
+    static Set<String> loadWordList() {
+        return ImmutableSet.of(
                 "acrobat", "africa", "alaska", "albert", "albino", "album",
                 "alcohol", "alex", "alpha", "amadeus", "amanda", "amazon",
                 "america", "analog", "animal", "antenna", "antonio", "apollo",

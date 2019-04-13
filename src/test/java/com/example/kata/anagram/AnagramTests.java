@@ -1,56 +1,58 @@
 package com.example.kata.anagram;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class AnagramTests {
-    private final AnagramResolver resolver = new AnagramResolver();
 
     @Test
     public void testMatchAnagram() {
-        assertTrue(resolver.matchAnagram("documenting", "do", "men"));
-        assertTrue(resolver.matchAnagram("documenting", "men", "do"));
-        assertFalse(resolver.matchAnagram("documenting", "as", "bird"));
-        assertTrue(resolver.matchAnagram("documenting", "do", "unit"));
-        assertFalse(resolver.matchAnagram("documenting", "do", "out"));
-        assertTrue(resolver.matchAnagram("documentation", "do", "on"));
-        assertTrue(resolver.matchAnagram("documentation", "dot", "out"));
-        assertFalse(resolver.matchAnagram("documentation", "dot", "init"));
+        assertTrue(new Anagram("do", "men").match("documenting"));
+        assertTrue(new Anagram("men", "do").match("documenting"));
+        assertFalse(new Anagram("as", "bird").match("documenting"));
+        assertTrue(new Anagram("do", "unit").match("documenting"));
+        assertFalse(new Anagram("do", "out").match("documenting"));
+        assertTrue(new Anagram("do", "on").match("documentation"));
+        assertTrue(new Anagram("dot", "out").match("documentation"));
+        assertFalse(new Anagram("dot", "init").match("documentation"));
     }
 
     @Test
     public void testListAnagramCandidates() {
-        assertThat(resolver.listAnagramCandidates(ImmutableList.of("do", "men")), is(ImmutableList.of(Pair.of("do", "men"), Pair.of("men", "do"))));
-        assertThat(resolver.listAnagramCandidates(ImmutableList.of("test", "driven")), is(ImmutableList.of(Pair.of("test", "driven"), Pair.of("driven", "test"))));
-        assertThat(resolver.listAnagramCandidates(ImmutableList.of("test")), is(ImmutableList.of()));
-        assertThat(resolver.listAnagramCandidates(ImmutableList.of("t", "d", "v")), is(ImmutableList.of(
-                Pair.of("t", "d"), Pair.of("t", "v"),
-                Pair.of("d", "t"), Pair.of("d", "v"),
-                Pair.of("v", "t"), Pair.of("v", "d")
+        assertThat(listAnagramCandidates(ImmutableSet.of("do", "men")), is(ImmutableSet.of(new Anagram("do", "men"), new Anagram("men", "do"))));
+        assertThat(listAnagramCandidates(ImmutableSet.of("test", "driven")), is(ImmutableSet.of(new Anagram("test", "driven"), new Anagram("driven", "test"))));
+        assertThat(listAnagramCandidates(ImmutableSet.of("test")), is(ImmutableSet.of()));
+        assertThat(listAnagramCandidates(ImmutableSet.of("t", "d", "v")), is(ImmutableSet.of(
+                new Anagram("t", "d"), new Anagram("t", "v"),
+                new Anagram("d", "t"), new Anagram("d", "v"),
+                new Anagram("v", "t"), new Anagram("v", "d")
         )));
     }
 
     @Test
     public void testResolveAnagrams() {
-        assertThat(resolver.resolveAnagrams("documenting", ImmutableList.of("do", "men")), is(ImmutableList.of(Pair.of("do", "men"), Pair.of("men", "do"))));
-        assertThat(resolver.resolveAnagrams("test", ImmutableList.of("do", "men")), is(ImmutableList.of()));
-        assertThat(resolver.resolveAnagrams("documenting", ImmutableList.of("do", "in", "ego")), is(ImmutableList.of(
-                Pair.of("do", "in"),
-                Pair.of("in", "do"), Pair.of("in", "ego"),
-                Pair.of("ego", "in")
+        assertThat(new AnagramResolver().resolveAnagrams("documenting", ImmutableSet.of("do", "men")), is(ImmutableSet.of(new Anagram("do", "men"), new Anagram("men", "do"))));
+        assertThat(new AnagramResolver().resolveAnagrams("test", ImmutableSet.of("do", "men")), is(ImmutableSet.of()));
+        assertThat(new AnagramResolver().resolveAnagrams("documenting", ImmutableSet.of("do", "in", "ego")), is(ImmutableSet.of(
+                new Anagram("do", "in"),
+                new Anagram("in", "do"), new Anagram("in", "ego"),
+                new Anagram("ego", "in")
         )));
     }
 
     @Test
     public void testResolveAnagramsFromActualWordList() {
-        List<Pair<String, String>> resolved = resolver.resolveAnagrams("documenting", AnagramWordSet.loadWordList());
+        Set<Anagram> resolved = new AnagramResolver().resolveAnagrams("documenting", AnagramWordSet.loadWordList());
         assertThat(resolved, is(not(empty())));
-        System.out.println(resolved);
+    }
+
+    private Set<Anagram> listAnagramCandidates(ImmutableSet<String> source) {
+        return new AnagramSource(source).readAnagrams().collect(Collectors.toSet());
     }
 }

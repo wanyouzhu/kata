@@ -28,6 +28,7 @@ public class ArgsParserTest {
     public void testParse() {
         assertThat(parse("-b -p 5 -l 3,5,8"), is(setOf(ofBoolean('b', true), ofNumber('p', 5), ofString('s', ""), ofList('l', 3, 5, 8))));
         assertThat(parse("-b"), is(setOf(ofBoolean('b', true), ofNumber('p', 0), ofString('s', ""), ofList('l'))));
+        assertThat(parse("-s a-string"), is(setOf(ofBoolean('b', false), ofNumber('p', 0), ofString('s', "a-string"), ofList('l'))));
         assertThat(parse(""), is(setOf(ofBoolean('b', false), ofNumber('p', 0), ofString('s', ""), ofList('l'))));
     }
 
