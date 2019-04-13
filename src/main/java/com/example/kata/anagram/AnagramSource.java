@@ -18,15 +18,23 @@ class AnagramSource {
         return generateIndices().filter(this::isMeaningful).map(this::getAnagram);
     }
 
-    private Anagram getAnagram(Pair<Integer, Integer> wordIndices) {
-        return new Anagram(words.get(wordIndices.getLeft()), words.get(wordIndices.getRight()));
+    private Anagram getAnagram(Pair<Integer, Integer> index) {
+        return new Anagram(words.get(index.getLeft()), words.get(index.getRight()));
     }
 
-    private boolean isMeaningful(Pair<Integer, Integer> wordIndices) {
-        return !wordIndices.getLeft().equals(wordIndices.getRight());
+    private boolean isMeaningful(Pair<Integer, Integer> index) {
+        return !index.getLeft().equals(index.getRight());
     }
 
     private Stream<Pair<Integer, Integer>> generateIndices() {
-        return IntStream.range(0, words.size() * words.size()).mapToObj(i -> Pair.of(i / words.size(), i % words.size()));
+        return generateLeftParts().flatMap(this::generateRightParts);
+    }
+
+    private Stream<Integer> generateLeftParts() {
+        return IntStream.range(0, words.size()).boxed();
+    }
+
+    private Stream<Pair<Integer, Integer>> generateRightParts(Integer left) {
+        return IntStream.range(0, words.size()).mapToObj(right -> Pair.of(left, right));
     }
 }
