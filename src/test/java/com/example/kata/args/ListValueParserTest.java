@@ -30,11 +30,11 @@ public class ListValueParserTest {
 
     private CharStream consumeListValue(String source) {
         CharStream input = CharStream.from(source);
-        ValueParser.forList(ValueParser.forNumber(0)).parse(input);
+        ValueParser.forListWithDefault(ValueParser.forNumberWithDefault(0)).parse(input);
         return input;
     }
 
     private Optional<Value> parseListValue(String source) {
-        return ValueParser.forList(ValueParser.forNumber(0)).parse(CharStream.from(source));
+        return ValueParser.forListWithDefault(ValueParser.forNumberWithDefault(0)).parse(CharStream.from(source));
     }
 }

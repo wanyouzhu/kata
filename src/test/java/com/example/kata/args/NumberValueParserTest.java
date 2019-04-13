@@ -30,11 +30,11 @@ public class NumberValueParserTest {
 
     private CharStream consumeNumberValue(String source) {
         CharStream input = CharStream.from(source);
-        ValueParser.forNumber(0).parse(input);
+        ValueParser.forNumberWithDefault(0).parse(input);
         return input;
     }
 
     private Optional<Value> parseNumberValue(String source) {
-        return ValueParser.forNumber(0).parse(CharStream.from(source));
+        return ValueParser.forNumberWithDefault(0).parse(CharStream.from(source));
     }
 }
