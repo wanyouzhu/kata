@@ -29,12 +29,12 @@ public class NumberValueParserTest {
     }
 
     private CharStream consumeNumberValue(String source) {
-        CharStream input = CharStream.from(source);
-        ValueParser.forNumberWithDefault(0).parse(input);
+        CharStream input = CharStream.of(source);
+        ValueParser.numberWithDefault(0).parse(input);
         return input;
     }
 
     private Optional<Value> parseNumberValue(String source) {
-        return ValueParser.forNumberWithDefault(0).parse(CharStream.from(source));
+        return ValueParser.numberWithDefault(0).parse(CharStream.of(source));
     }
 }

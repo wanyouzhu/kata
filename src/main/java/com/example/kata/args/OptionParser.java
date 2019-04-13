@@ -14,6 +14,10 @@ class OptionParser {
         return new OptionParser(flagParser, valueParser);
     }
 
+    static OptionParser of(char flagName, ValueParser valueParser) {
+        return new OptionParser(FlagParser.of(flagName), valueParser);
+    }
+
     Optional<Option> parse(CharStream input) {
         Optional<Flag> parsedFlag = flagParser.parse(input);
         return parsedFlag.map(flag -> Option.of(flag, valueParser.parse(input).orElse(valueParser.getDefaultValue())));

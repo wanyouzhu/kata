@@ -29,12 +29,12 @@ public class ListValueParserTest {
     }
 
     private CharStream consumeListValue(String source) {
-        CharStream input = CharStream.from(source);
-        ValueParser.forListWithDefault(ValueParser.forNumberWithDefault(0)).parse(input);
+        CharStream input = CharStream.of(source);
+        ValueParser.listWithDefault(ValueParser.numberWithDefault(0)).parse(input);
         return input;
     }
 
     private Optional<Value> parseListValue(String source) {
-        return ValueParser.forListWithDefault(ValueParser.forNumberWithDefault(0)).parse(CharStream.from(source));
+        return ValueParser.listWithDefault(ValueParser.numberWithDefault(0)).parse(CharStream.of(source));
     }
 }

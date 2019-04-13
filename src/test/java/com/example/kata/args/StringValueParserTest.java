@@ -28,12 +28,12 @@ public class StringValueParserTest {
     }
 
     private Optional<Value> parseStringValue(String source) {
-        return ValueParser.forStringWithDefault("").parse(CharStream.from(source));
+        return ValueParser.stringWithDefault("").parse(CharStream.of(source));
     }
 
     private CharStream consumeStringValue(String source) {
-        CharStream input = CharStream.from(source);
-        ValueParser.forStringWithDefault("").parse(input);
+        CharStream input = CharStream.of(source);
+        ValueParser.stringWithDefault("").parse(input);
         return input;
     }
 }

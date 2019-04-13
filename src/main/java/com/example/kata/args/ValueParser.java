@@ -3,19 +3,19 @@ package com.example.kata.args;
 import java.util.Optional;
 
 abstract class ValueParser {
-    static ValueParser forBooleanWithDefault(boolean defaultValue) {
+    static ValueParser booleanWithDefault(boolean defaultValue) {
         return new BooleanValueParser(defaultValue);
     }
 
-    static ValueParser forStringWithDefault(String defaultValue) {
+    static ValueParser stringWithDefault(String defaultValue) {
         return new StringValueParser(defaultValue);
     }
 
-    static ValueParser forNumberWithDefault(int defaultValue) {
+    static ValueParser numberWithDefault(int defaultValue) {
         return new NumberValueParser(defaultValue);
     }
 
-    static ValueParser forListWithDefault(ValueParser elementParser) {
+    static ValueParser listWithDefault(ValueParser elementParser) {
         return new ListValueParser(elementParser);
     }
 

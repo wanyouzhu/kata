@@ -11,7 +11,7 @@ class CharStream {
         this.chars = source.codePoints().boxed().collect(Collectors.toList());
     }
 
-    static CharStream from(String source) {
+    static CharStream of(String source) {
         return new CharStream(source);
     }
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 class FlagParser {
     private final char flag;
 
-    static FlagParser create(char name) {
+    static FlagParser of(char name) {
         return new FlagParser(name);
     }
 

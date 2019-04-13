@@ -21,12 +21,12 @@ public class BooleanValueParserTest {
     }
 
     private CharStream consumeBooleanValue(String source) {
-        CharStream input = CharStream.from(source);
-        ValueParser.forBooleanWithDefault(false).parse(input);
+        CharStream input = CharStream.of(source);
+        ValueParser.booleanWithDefault(false).parse(input);
         return input;
     }
 
     private Optional<Value> parseBooleanParser(String s) {
-        return ValueParser.forBooleanWithDefault(false).parse(CharStream.from(s));
+        return ValueParser.booleanWithDefault(false).parse(CharStream.of(s));
     }
 }

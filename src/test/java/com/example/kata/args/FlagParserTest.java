@@ -30,12 +30,12 @@ public class FlagParserTest {
     }
 
     private Optional<Flag> parseFlag(char t, String s) {
-        return FlagParser.create(t).parse(CharStream.from(s));
+        return FlagParser.of(t).parse(CharStream.of(s));
     }
 
     private CharStream consumeFlag(char flag, String source) {
-        CharStream stream = CharStream.from(source);
-        FlagParser.create(flag).parse(stream);
+        CharStream stream = CharStream.of(source);
+        FlagParser.of(flag).parse(stream);
         return stream;
     }
 }

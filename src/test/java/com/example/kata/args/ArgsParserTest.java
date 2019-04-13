@@ -1,68 +1,42 @@
 package com.example.kata.args;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.Mockito;
 
-import java.util.Optional;
+import java.util.Set;
 
+import static com.example.kata.args.Option.*;
+import static com.example.kata.args.ValueParser.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 public class ArgsParserTest {
-    public @Rule ExpectedException exceptionRule = ExpectedException.none();
-    private CharStream input;
-    private Option optionT;
-    private Option optionP;
-    private Option defaultOption;
+    private ArgsParser parser;
 
     @Before
-    public void setUp() {
-        input = Mockito.mock(CharStream.class);
-        Mockito.when(input.eof()).thenReturn(true);
-        optionT = Option.of(Flag.of('t'), Value.ofNumber(8));
-        optionP = Option.of(Flag.of('p'), Value.ofNumber(4));
-        defaultOption = Option.of(Flag.of('x'), Value.ofNumber(0));
+    public void setup() {
+        parser = new ArgsParser(
+                OptionParser.of('b', booleanWithDefault(false)),
+                OptionParser.of('p', numberWithDefault(0)),
+                OptionParser.of('l', listWithDefault(numberWithDefault(0))),
+                OptionParser.of('s', stringWithDefault(""))
+        );
     }
 
     @Test
-    public void testParseAllOptions() {
-        assertThat(new ArgsParser(mockOptionParser(optionT)).parse(input), is(ImmutableSet.of(optionT)));
-        assertThat(new ArgsParser(mockOptionParser(optionT), mockOptionParser(optionP)).parse(input), is(ImmutableSet.of(optionT, optionP)));
+    public void testParse() {
+        assertThat(parse("-b -p 5 -l 3,5,8"), is(setOf(ofBoolean('b', true), ofNumber('p', 5), ofString('s', ""), ofList('l', 3, 5, 8))));
+        assertThat(parse("-b"), is(setOf(ofBoolean('b', true), ofNumber('p', 0), ofString('s', ""), ofList('l'))));
+        assertThat(parse(""), is(setOf(ofBoolean('b', false), ofNumber('p', 0), ofString('s', ""), ofList('l'))));
     }
 
-    @Test
-    public void testDefaultValue() {
-        assertThat(new ArgsParser(noResultElementParserWithDefault(optionT), noResultElementParserWithDefault(optionP)).parse(input), is(ImmutableSet.of(optionP, optionT)));
+    @SafeVarargs
+    private final <T> Set<T> setOf(T... elements) {
+        return Sets.newHashSet(elements);
     }
 
-    private OptionParser noResultElementParserWithDefault(Option defaultOption) {
-        OptionParser result = Mockito.mock(OptionParser.class);
-        Mockito.when(result.parse(any())).thenReturn(Optional.empty());
-        Mockito.when(result.getDefault()).thenReturn(defaultOption);
-        return result;
-    }
-
-    @Test
-    public void testParseUnknownOptions() {
-        CharStream nonEofInput = Mockito.mock(CharStream.class);
-        Mockito.when(nonEofInput.eof()).thenReturn(false);
-        Mockito.when(nonEofInput.read(anyInt())).thenReturn("abc");
-        exceptionRule.expect(ArgsException.class);
-        exceptionRule.expectMessage("Unprocessable fragment near: 'abc'");
-        new ArgsParser(mockOptionParser(optionT)).parse(nonEofInput);
-    }
-
-    @SuppressWarnings("unchecked")
-    private OptionParser mockOptionParser(Option option) {
-        OptionParser result = Mockito.mock(OptionParser.class);
-        Mockito.when(result.parse(any())).thenReturn(Optional.of(option), Optional.empty());
-        Mockito.when(result.getDefault()).thenReturn(option);
-        return result;
+    private Set<Option> parse(String source) {
+        return parser.parse(CharStream.of(source));
     }
 }
