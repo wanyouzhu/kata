@@ -10,10 +10,6 @@ class OptionParser {
     private final FlagParser flagParser;
     private final ValueParser valueParser;
 
-    static OptionParser create(FlagParser flagParser, ValueParser valueParser) {
-        return new OptionParser(flagParser, valueParser);
-    }
-
     static OptionParser of(char flagName, ValueParser valueParser) {
         return new OptionParser(FlagParser.of(flagName), valueParser);
     }
@@ -24,6 +20,6 @@ class OptionParser {
     }
 
     Option getDefault() {
-        return Option.of(Flag.of(flagParser.getFlag()), valueParser.getDefaultValue());
+        return Option.of(flagParser.getFlag(), valueParser.getDefaultValue());
     }
 }
