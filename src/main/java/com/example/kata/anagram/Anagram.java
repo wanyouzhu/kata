@@ -17,11 +17,18 @@ class Anagram {
     }
 
     boolean match(String source) {
-        HashMultiset<Integer> set = getCodePoints(source).collect(Collectors.toCollection(HashMultiset::create));
-        return getCodePoints(word1 + word2).allMatch(set::remove);
+        return allCodePointsIn(source);
     }
 
-    private Stream<Integer> getCodePoints(String s) {
-        return (s).codePoints().boxed();
+    private boolean allCodePointsIn(String source) {
+        return getCodePoints(word1 + word2).allMatch(decomposeStringInToMultiset(source)::remove);
+    }
+
+    private HashMultiset<Integer> decomposeStringInToMultiset(String source) {
+        return getCodePoints(source).collect(Collectors.toCollection(HashMultiset::create));
+    }
+
+    private Stream<Integer> getCodePoints(String string) {
+        return string.codePoints().boxed();
     }
 }
