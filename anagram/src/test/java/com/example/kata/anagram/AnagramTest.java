@@ -1,6 +1,6 @@
 package com.example.kata.anagram;
 
-import org.assertj.core.util.Sets;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -58,6 +58,6 @@ public class AnagramTest {
     }
 
     private Set<Anagram> setOf(Anagram... anagrams) {
-        return Sets.newLinkedHashSet(anagrams);
+        return Sets.newHashSet(anagrams);
     }
 }

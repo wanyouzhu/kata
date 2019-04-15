@@ -46,18 +46,12 @@ class Schema {
 
     private Value getDefaultValue(String type, String valueString) {
         switch (type) {
-            case "bool":
-                return Value.parseBool(valueString);
-            case "int":
-                return Value.parseInt(valueString);
-            case "string":
-                return Value.ofString(valueString);
-            case "[int]":
-                return Value.parseIntList(valueString);
-            case "[string]":
-                return Value.parseStringList(valueString);
-            default:
-                throw new RuntimeException("Unknown type: " + type);
+            case "bool": return Value.parseBool(valueString);
+            case "int": return Value.parseInt(valueString);
+            case "string": return Value.ofString(valueString);
+            case "[int]": return Value.parseIntList(valueString);
+            case "[string]": return Value.parseStringList(valueString);
+            default: throw new RuntimeException("Unknown type: " + type);
         }
     }
 

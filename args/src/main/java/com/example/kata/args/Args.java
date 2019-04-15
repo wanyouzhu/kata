@@ -1,7 +1,6 @@
 package com.example.kata.args;
 
 import com.google.common.collect.Lists;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.PushbackReader;
@@ -103,7 +102,6 @@ class Args {
         return Value.ofString(matchString());
     }
 
-    @NotNull
     private String matchString() {
         StringBuilder builder = new StringBuilder();
         while (token != EOF && token != ',' && !Character.isWhitespace(token)) {
@@ -117,7 +115,6 @@ class Args {
         return Value.parseInt(matchInt());
     }
 
-    @NotNull
     private String matchInt() {
         StringBuilder builder = new StringBuilder();
         while ((builder.length() == 0 && (token == '+' || token == '-')) || Character.isDigit(token)) {
@@ -157,14 +154,9 @@ class Args {
             int numberOfReadChars = input.read(result);
             if (numberOfReadChars == length) return result;
             return numberOfReadChars == -1 ? new char[0] : Arrays.copyOfRange(result, 0, numberOfReadChars);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Can NOT read from input string!", e);
         }
-    }
-
-    private void match(String text) {
-        text.chars().forEach(this::match);
     }
 
     private void match(int expected) {
