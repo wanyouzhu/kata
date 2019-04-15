@@ -2,17 +2,15 @@ package com.example.kata.anagram;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class AnagramResolver {
-    private final AnagramSource anagramSource;
+    private final AnagramGenerator generator;
 
-    AnagramResolver(AnagramSource anagramSource) {
-        this.anagramSource = anagramSource;
+    AnagramResolver(Set<String> wordList) {
+        this.generator = new AnagramGenerator(wordList);
     }
 
     Set<Anagram> resolve(String source) {
-        Stream<Anagram> candidates = anagramSource.generateCandidates();
-        return candidates.filter(anagram -> anagram.match(source)).collect(Collectors.toSet());
+        return generator.generate().filter(anagram -> anagram.match(source)).collect(Collectors.toSet());
     }
 }

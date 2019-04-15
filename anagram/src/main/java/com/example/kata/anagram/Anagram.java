@@ -1,10 +1,10 @@
 package com.example.kata.anagram;
 
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import lombok.Value;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Value
 class Anagram {
@@ -17,18 +17,7 @@ class Anagram {
     }
 
     boolean match(String source) {
-        return allCodePointsIn(source);
-    }
-
-    private boolean allCodePointsIn(String source) {
-        return getCodePoints(word1 + word2).allMatch(decomposeStringInToMultiset(source)::remove);
-    }
-
-    private HashMultiset<Integer> decomposeStringInToMultiset(String source) {
-        return getCodePoints(source).collect(Collectors.toCollection(HashMultiset::create));
-    }
-
-    private Stream<Integer> getCodePoints(String string) {
-        return string.codePoints().boxed();
+        Multiset sourceCharSet = source.chars().boxed().collect(Collectors.toCollection(HashMultiset::create));
+        return (word1 + word2).chars().allMatch(sourceCharSet::remove);
     }
 }
