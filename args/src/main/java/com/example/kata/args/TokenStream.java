@@ -22,6 +22,12 @@ class TokenStream {
         return !eof() && getChar() == expect;
     }
 
+    boolean tryMatch(String expect) {
+        if (!canMatch(expect)) return false;
+        match(expect);
+        return true;
+    }
+
     void match(String expect) {
         if (!canMatch(expect)) throw new ArgsException(generateBadTokenMessage());
         position += expect.length();

@@ -20,9 +20,17 @@ class Parser {
     }
 
     private void initializeValueParsers() {
+        initializeSingleValueParsers();
+        initializeListValueParsers();
+    }
+
+    private void initializeSingleValueParsers() {
         valueParsers.put(ValueType.BOOLEAN, this::matchBoolValue);
         valueParsers.put(ValueType.INTEGER, this::matchIntValue);
         valueParsers.put(ValueType.STRING, this::matchStringValue);
+    }
+
+    private void initializeListValueParsers() {
         valueParsers.put(ValueType.INTEGER_LIST, this::matchIntListValue);
         valueParsers.put(ValueType.STRING_LIST, this::matchStringListValue);
     }
@@ -40,18 +48,28 @@ class Parser {
     }
 
     private void parseArgument(List<Argument> result) {
-        tokenStream.skipWhitespaces();
-        tokenStream.match('-');
+        matchFlagPrefix();
+        Option option = matchFlag();
+        Value value = matchValue(option);
+        result.add(new Argument(option.getFlag(), value));
+    }
+
+    private Option matchFlag() {
         Option option = schema.getOption(tokenStream.getChar());
         if (option == null) throw new ArgsException("Unknown flag near: " + tokenStream.getRemains());
         tokenStream.match(option.getFlag());
+        return option;
+    }
+
+    private void matchFlagPrefix() {
         tokenStream.skipWhitespaces();
-        result.add(new Argument(option.getFlag(), matchValue(option)));
+        tokenStream.match('-');
     }
 
     private Value matchValue(Option option) {
         Supplier<Value> valueParser = valueParsers.get(option.getType());
         if (valueParser == null) throw new ArgsException("Unknown value type: " + option.getType());
+        tokenStream.skipWhitespaces();
         return valueParser.get();
     }
 
@@ -64,39 +82,28 @@ class Parser {
     }
 
     private Value matchIntListValue() {
-        return Value.ofIntList(matchIntList());
+        return Value.ofIntList(matchList(tokenStream::readInt));
     }
 
-    private List<Integer> matchIntList() {
-        List<Integer> result = Lists.newArrayList();
-        result.add(tokenStream.readInt());
+    private <T> List<T> matchList(Supplier<T> tokenParser) {
+        List<T> result = Lists.newArrayList();
+        result.add(tokenParser.get());
+        matchListTailElements(tokenParser, result);
+        return result;
+    }
+
+    private <T> void matchListTailElements(Supplier<T> tokenParser, List<T> result) {
         while (tokenStream.canMatch(',')) {
             tokenStream.match(',');
-            result.add(tokenStream.readInt());
+            result.add(tokenParser.get());
         }
-        return result;
     }
 
     private Value matchStringListValue() {
-        return Value.ofStringList(matchStringList());
-    }
-
-    private List<String> matchStringList() {
-        List<String> result = Lists.newArrayList();
-        result.add(tokenStream.readString());
-        while (tokenStream.canMatch(',')) {
-            tokenStream.match(',');
-            result.add(tokenStream.readString());
-        }
-        return result;
+        return Value.ofStringList(matchList(tokenStream::readString));
     }
 
     private Value matchBoolValue() {
-        boolean matchedTrue = tokenStream.canMatch("true");
-        if (matchedTrue) tokenStream.match("true");
-        boolean matchedFalse = tokenStream.canMatch("false");
-        if (matchedFalse) tokenStream.match("false");
-        return Value.ofBool(matchedTrue || !matchedFalse);
+        return Value.ofBool(tokenStream.tryMatch("true") || !tokenStream.tryMatch("false"));
     }
-
 }
