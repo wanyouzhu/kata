@@ -2,91 +2,104 @@ package com.example.kata.args;
 
 import org.junit.Test;
 
+import static com.example.kata.args.Option.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ArgsTest {
     @Test
-    public void can_parse_true_boolean_option_value() {
-        String schemaText = "t:bool:false";
-        String commandLine = "-t true";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('t'), is(new Argument(new Option('t', Value.ofBool(false)), Value.ofBool(true))));
+    public void can_parse_true_boolean_value() {
+        Schema schema = new Schema(ofBool('b', false));
+        String commandLine = "-b true";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('b'), is(Value.ofBool(true)));
     }
 
     @Test
-    public void can_parse_false_boolean_option_value() {
-        String schemaText = "t:bool:true";
-        String commandLine = "-t false";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('t'), is(new Argument(new Option('t', Value.ofBool(true)), Value.ofBool(false))));
+    public void can_parse_false_boolean_value() {
+        Schema schema = new Schema(ofBool('b', true));
+        String commandLine = "-b false";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('b'), is(Value.ofBool(false)));
     }
 
     @Test
-    public void can_parse_empty_boolean_option_value() {
-        String schemaText = "t:bool:false";
-        String commandLine = "-t";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('t'), is(new Argument(new Option('t', Value.ofBool(false)), Value.ofBool(true))));
+    public void can_parse_empty_boolean_value() {
+        Schema schema = new Schema(ofBool('b', false));
+        String commandLine = "-b";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('b'), is(Value.ofBool(true)));
     }
 
     @Test
-    public void can_parse_int_option_value() {
-        String schemaText = "p:int:1080";
-        String commandLine = "-p 8080";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('p'), is(new Argument(new Option('p', Value.ofInt(1080)), Value.ofInt(8080))));
+    public void can_parse_integer_value() {
+        Schema schema = new Schema(ofInt('n', 0));
+        String commandLine = "-n 5";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('n'), is(Value.ofInt(5)));
     }
 
     @Test
-    public void can_parse_int_option_value_prefixed_with_sign_mark() {
-        String schemaText = "n:int:0; m:int:0";
-        String commandLine = "-n -1 -m +2";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgumentValue('n'), is(Value.ofInt(-1)));
-        assertThat(args.getArgumentValue('m'), is(Value.ofInt(2)));
+    public void can_parse_negative_integer_value() {
+        Schema schema = new Schema(ofInt('n', 0));
+        String commandLine = "-n -5";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('n'), is(Value.ofInt(-5)));
     }
 
     @Test
-    public void can_parse_string_option_value() {
-        String schemaText = "f:string:a.txt";
-        String commandLine = "-f b.txt";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('f'), is(new Argument(new Option('f', Value.ofString("a.txt")), Value.ofString("b.txt"))));
+    public void can_parse_integer_with_plus_sign() {
+        Schema schema = new Schema(ofInt('n', 0));
+        String commandLine = "-n +5";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('n'), is(Value.ofInt(5)));
     }
 
     @Test
-    public void can_parse_int_list_option_value() {
-        String schemaText = "l:[int]:1";
-        String commandLine = "-l 5,7,8";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('l'), is(new Argument(new Option('l', Value.ofIntList(1)), Value.ofIntList(5, 7, 8))));
+    public void can_parse_string_value() {
+        Schema schema = new Schema(ofString('f', "/var/test.txt"));
+        String commandLine = "-f /srv/nginx/test.conf";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('f'), is(Value.ofString("/srv/nginx/test.conf")));
     }
 
     @Test
-    public void can_parse_string_list_option_value() {
-        String schemaText = "l:[string]:that";
-        String commandLine = "-l that,this,those";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgument('l'), is(new Argument(new Option('l', Value.ofStringList("that")), Value.ofStringList("that", "this", "those"))));
+    public void can_parse_integer_list_value() {
+        Schema schema = new Schema(ofIntList('w'));
+        String commandLine = "-w 1,-2,+3";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('w'), is(Value.ofIntList(1, -2, 3)));
     }
 
     @Test
-    public void can_parse_multiple_option_values() {
-        String schemaText = "t:bool:false; n:int:0; o:string:test.log; i:[string]:; l:[int]:0";
-        String commandLine = "-t -n 100 -o main.log -i a.txt,b.txt -l 0,-1,+2,3";
-        Args args = new Args(new Schema(schemaText), commandLine);
-        assertThat(args.getArgumentValue('t'), is(Value.ofBool(true)));
-        assertThat(args.getArgumentValue('n'), is(Value.ofInt(100)));
-        assertThat(args.getArgumentValue('o'), is(Value.ofString("main.log")));
-        assertThat(args.getArgumentValue('i'), is(Value.ofStringList("a.txt", "b.txt")));
-        assertThat(args.getArgumentValue('l'), is(Value.ofIntList(0, -1, 2, 3)));
+    public void can_parse_string_list_value() {
+        Schema schema = new Schema(ofStringList('i'));
+        String commandLine = "-i a.txt,b.txt,c.txt";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('i'), is(Value.ofStringList("a.txt", "b.txt", "c.txt")));
     }
 
     @Test
-    public void can_parse_option_values_that_contain_whitespaces() {
-        String schemaText = "t:bool:false; n:int:0; o:string:test.log; i:[string]:; l:[int]:0";
-        String commandLine = " -t -n 100 -o main.log -i a.txt , b.txt -l 0 , 1 , 2 , 3 ";
-        new Args(new Schema(schemaText), commandLine);
+    public void can_parse_multiple_arguments() {
+        Schema schema = new Schema(ofInt('n', 0), ofBool('t', false), ofString('f', ""), ofIntList('k'), ofStringList('v'));
+        String commandLine = "-n 5 -t -f a.txt -k 2,9 -v foo,bar";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('n'), is(Value.ofInt(5)));
+        assertThat(args.getOptionValue('t'), is(Value.ofBool(true)));
+        assertThat(args.getOptionValue('f'), is(Value.ofString("a.txt")));
+        assertThat(args.getOptionValue('k'), is(Value.ofIntList(2, 9)));
+        assertThat(args.getOptionValue('v'), is(Value.ofStringList("foo", "bar")));
+    }
+
+    @Test
+    public void can_parse_empty_command_line_with_default_values() {
+        Schema schema = new Schema(ofInt('n', 2), ofBool('t', true), ofString('f', "a.txt"), ofIntList('k', 1), ofStringList('v', "foo"));
+        String commandLine = "";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getOptionValue('n'), is(Value.ofInt(2)));
+        assertThat(args.getOptionValue('t'), is(Value.ofBool(true)));
+        assertThat(args.getOptionValue('f'), is(Value.ofString("a.txt")));
+        assertThat(args.getOptionValue('k'), is(Value.ofIntList(1)));
+        assertThat(args.getOptionValue('v'), is(Value.ofStringList("foo")));
     }
 }
