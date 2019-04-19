@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import {describe} from "mocha";
+import {expect} from "chai";
 import Anagram from '../src/Anagram';
 import AnagramGenerator from '../src/AnagramGenerator'
 import AnagramResolver from '../src/AnagramResolver'
@@ -39,8 +40,8 @@ describe('Anagram tests', () => {
     it('Can find out matched anagrams', () => {
         const wordList = ['a', 'b', 'c'];
         const anagramResolver = new AnagramResolver(wordList);
-        expect(anagramResolver.resolve('ab')).deep.equals([new Anagram('a', 'b'), new Anagram('b', 'a')]);
-        expect(anagramResolver.resolve('ba')).deep.equals([new Anagram('a', 'b'), new Anagram('b', 'a')]);
-        expect(anagramResolver.resolve('bc')).deep.equals([new Anagram('b', 'c'), new Anagram('c', 'b')]);
+        expect(anagramResolver.resolve('ab')).to.be.deep.equal([new Anagram('a', 'b'), new Anagram('b', 'a')]);
+        expect(anagramResolver.resolve('ba')).to.be.deep.equal([new Anagram('a', 'b'), new Anagram('b', 'a')]);
+        expect(anagramResolver.resolve('bc')).to.be.deep.equal([new Anagram('b', 'c'), new Anagram('c', 'b')]);
     });
 });

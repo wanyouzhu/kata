@@ -6,6 +6,6 @@ export default class AnagramGenerator {
     }
 
     walk(consumer) {
-        this.wordList.forEach((word1, i) => this.wordList.forEach((word2, j) => i != j && consumer(new Anagram(word1, word2))));
+        this.wordList.forEach((word1, i) => this.wordList.forEach((word2, j) => i !== j && consumer(new Anagram(word1, word2))));
     }
 }
