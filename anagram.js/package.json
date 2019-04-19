@@ -1,0 +1,25 @@
+{
+  "name": "anagram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "AnagramTest.js",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.18.11"
+  },
+  "scripts": {
+    "test": "mocha --require @babel/register",
+    "start": "nodemon --exec babel-node ./src/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
