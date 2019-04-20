@@ -12,6 +12,7 @@ class Tokenizer {
     private final List<String> tokens = newArrayList();
     private StringBuilder builder = new StringBuilder();
     private int quotationMark = 0;
+    private boolean escapeStarted = false;
 
     Tokenizer(String input) {
         this.input = input;
@@ -20,7 +21,9 @@ class Tokenizer {
 
     private void tokenize() {
         for (int i = 0; i < input.length(); ++i) {
-            if (input.charAt(i) == '\\') {
+            if (input.charAt(i) == '\\' && !escapeStarted) {
+                builder.append(input.charAt(i));
+                escapeStarted = true;
                 continue;
             }
 
@@ -41,6 +44,7 @@ class Tokenizer {
             }
 
             builder.append(input.charAt(i));
+            escapeStarted = false;
         }
 
         if (builder.length() > 0) {
