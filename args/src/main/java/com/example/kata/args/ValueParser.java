@@ -39,7 +39,7 @@ class ValueParser {
     }
 
     private Value parseStrings(String input) {
-        Stream<String> stream = new Tokenizer(input).getTokens().stream();
+        Stream<String> stream = new Tokenizer(input, ',').getTokens().stream();
         return Value.ofStrings(stream.map(this::parseString).toArray(String[]::new));
     }
 

@@ -14,6 +14,14 @@ class Schema {
         splitIntoSegments(input).forEach(this::parseSingleOption);
     }
 
+    ValueType getOptionType(char flag) {
+        return options.get(flag).getDefaultValue().getType();
+    }
+
+    Value getOptionDefaultValue(char flag) {
+        return options.get(flag).getDefaultValue();
+    }
+
     Option getOption(char flag) {
         return options.get(flag);
     }

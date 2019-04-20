@@ -57,16 +57,8 @@ Tasks:
 * Parse arguments
     * Parse simple arguments
         * p:boolean:false | -p true
-        * u:integer:5 | -u 8
-        * p:string: | -p test
-        * p:integers: | -p 1,2,3
-        * p:string: | -p this is a string
-        * p:strings: | -p this,is,a,list,of,string
     * Support default value
         * p:string: | -t other
-        * v:boolean:false | -v
-        * u:integer:5; v:boolean:false; w:string: | -u 12 -v true -w test
-    * Parse arguments that contains special chars
-        * p:string: | -p "a fake flag -t here"
-        * p:string:;f:string: | -p can you see this -f flag
+
+
 

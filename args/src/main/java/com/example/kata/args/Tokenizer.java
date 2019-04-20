@@ -14,9 +14,10 @@ class Tokenizer {
     private StringBuilder builder = new StringBuilder();
     private int quotationMark = 0;
     private boolean escapeStarted = false;
+    private boolean flagStarted = false;
 
     Tokenizer(String input) {
-        this(input, ',');
+        this(input, '\0');
     }
 
     Tokenizer(String input, char delimiter) {
@@ -40,6 +41,33 @@ class Tokenizer {
     }
 
     private boolean collectDelimiter(int current) {
+        return collectCharDelimiter(current) || collectFlagDelimiter(current);
+    }
+
+    private boolean collectFlagDelimiter(int current) {
+        return collectFlagStart(current) || collectFlagEnd(current);
+    }
+
+    private boolean collectFlagStart(int current) {
+        if (isQuotationOpen() || current != '-' || flagStarted) return false;
+        flagStarted = true;
+        return true;
+    }
+
+    private boolean collectFlagEnd(int current) {
+        if (isQuotationOpen() || !flagStarted || !isFlag(current)) return false;
+        endToken();
+        builder.append('-').appendCodePoint(current);
+        endToken();
+        flagStarted = false;
+        return true;
+    }
+
+    private boolean isFlag(int current) {
+        return Character.isLowerCase(current) || Character.isUpperCase(current);
+    }
+
+    private boolean collectCharDelimiter(int current) {
         if (!(isQuotationClosed() && isDelimiter(current))) return false;
         endToken();
         return true;
