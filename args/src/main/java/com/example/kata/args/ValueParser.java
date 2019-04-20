@@ -1,5 +1,6 @@
 package com.example.kata.args;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -10,13 +11,31 @@ import static org.apache.commons.lang3.StringUtils.*;
 class ValueParser {
     Value parse(String input, ValueType type) {
         switch (type) {
-            case INTEGER: return Value.ofInteger(Integer.parseInt(input));
-            case BOOLEAN: return Value.ofBoolean(Boolean.parseBoolean(input));
+            case INTEGER: return Value.ofInteger(parseInteger(input));
+            case BOOLEAN: return Value.ofBoolean(parseBoolean(input));
             case STRING: return Value.ofString(parseString(input));
             case INTEGERS: return parseIntegers(input);
             case STRINGS: return parseStrings(input);
             default: throw new ArgsException("Unsupported value type: " + type);
         }
+    }
+
+    private int parseInteger(String input) {
+        try {
+            return Integer.parseInt(trim(input));
+        } catch (NumberFormatException e) {
+            throw new ArgsException("Invalid value near: " + input, e);
+        }
+    }
+
+    private boolean parseBoolean(String input) {
+        String normalized = lowerCase(trim(input));
+        if (!isBooleanLiteral(normalized)) throw new ArgsException("Invalid value near: " + input);
+        return "true".equals(normalized);
+    }
+
+    private boolean isBooleanLiteral(String normalized) {
+        return ImmutableSet.of("true", "false").contains(normalized);
     }
 
     private Value parseStrings(String input) {

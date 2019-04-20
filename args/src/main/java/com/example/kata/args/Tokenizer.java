@@ -9,13 +9,19 @@ import static com.google.common.collect.Lists.newArrayList;
 @Getter
 class Tokenizer {
     private final String input;
+    private final char delimiter;
     private final List<String> tokens = newArrayList();
     private StringBuilder builder = new StringBuilder();
     private int quotationMark = 0;
     private boolean escapeStarted = false;
 
     Tokenizer(String input) {
+        this(input, ',');
+    }
+
+    Tokenizer(String input, char delimiter) {
         this.input = input;
+        this.delimiter = delimiter;
         tokenize();
     }
 
@@ -91,7 +97,7 @@ class Tokenizer {
     }
 
     private boolean isDelimiter(int current) {
-        return current == ',';
+        return current == delimiter;
     }
 
     private boolean isQuotationClosed() {

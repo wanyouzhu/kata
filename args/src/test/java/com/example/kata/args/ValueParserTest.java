@@ -27,6 +27,12 @@ public class ValueParserTest {
         assertThat(value, is(Value.ofInteger(5)));
     }
 
+    @Test(expected = ArgsException.class)
+    public void should_throw_exception_while_input_is_not_a_valid_integer() {
+        String input = "not-a-integer";
+        new ValueParser().parse(input, ValueType.INTEGER);
+    }
+
     @Test
     public void can_parse_true_boolean_value() {
         String input = "true";
@@ -39,6 +45,12 @@ public class ValueParserTest {
         String input = "false";
         Value value = new ValueParser().parse(input, ValueType.BOOLEAN);
         assertThat(value, is(Value.ofBoolean(false)));
+    }
+
+    @Test(expected = ArgsException.class)
+    public void should_throw_exception_while_input_is_not_a_valid_boolean() {
+        String input = "not-a-boolean";
+        new ValueParser().parse(input, ValueType.BOOLEAN);
     }
 
     @Test
@@ -91,13 +103,6 @@ public class ValueParserTest {
     }
 
     @Test
-    public void can_parse_integer_list_value_with_whitespaces() {
-        String input = "1, 2, 3";
-        Value value = new ValueParser().parse(input, ValueType.INTEGERS);
-        assertThat(value, is(Value.ofIntegers(1, 2, 3)));
-    }
-
-    @Test
     public void can_parse_string_list_value() {
         String input = "this,that";
         Value value = new ValueParser().parse(input, ValueType.STRINGS);
@@ -105,38 +110,10 @@ public class ValueParserTest {
     }
 
     @Test
-    public void can_parse_string_list_value_with_whitespaces() {
-        String input = " this , that ";
-        Value value = new ValueParser().parse(input, ValueType.STRINGS);
-        assertThat(value, is(Value.ofStrings("this", "that")));
-    }
-
-    @Test
-    public void can_parse_string_list_value_that_contains_list_delimiters() {
-        String input = "'[this, is]', \"[that, is]\"";
-        Value value = new ValueParser().parse(input, ValueType.STRINGS);
-        assertThat(value, is(Value.ofStrings("[this, is]", "[that, is]")));
-    }
-
-    @Test
     public void can_parse_string_value_with_backslash() {
         String input = "C:\\Windows\\System.dll";
         Value value = new ValueParser().parse(input, ValueType.STRING);
         assertThat(value, is(Value.ofString("C:\\Windows\\System.dll")));
-    }
-
-    @Test
-    public void can_parse_quoted_string_value_with_backslash() {
-        String input = "\\'C:\\Windows\\System.dll\\'";
-        Value value = new ValueParser().parse(input, ValueType.STRING);
-        assertThat(value, is(Value.ofString("\\'C:\\Windows\\System.dll\\'")));
-    }
-
-    @Test
-    public void can_parse_string_list_value_that_contains_backslashes() {
-        String input = "'[this, is \\d]', \"[that \\s, is]\"";
-        Value value = new ValueParser().parse(input, ValueType.STRINGS);
-        assertThat(value, is(Value.ofStrings("[this, is d]", "[that s, is]")));
     }
 
     @Test
