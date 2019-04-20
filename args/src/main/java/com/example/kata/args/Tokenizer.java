@@ -25,35 +25,50 @@ class Tokenizer {
     }
 
     private void collect(int current) {
-        if (canStartEscape(current)) {
-            startEscape();
-            return;
-        }
-        if (canEndEscape()) {
-            endEscape(current);
-            return;
-        }
-        if (canOpenQuotation(current)) {
-            openQuotation(current);
-            return;
-        }
-        if (canCloseQuotation(current)) {
-            closeQuotation();
-            return;
-        }
-        if (isDelimiter(current) && isQuotationClosed()) {
-            endToken();
-            return;
-        }
+        if (collectSpecialChar(current)) return;
         builder.appendCodePoint(current);
     }
 
-    private boolean canEndEscape() {
-        return escapeStarted;
+    private boolean collectSpecialChar(int current) {
+        return collectEscape(current) || collectQuotation(current) || collectDelimiter(current);
     }
 
-    private boolean canStartEscape(int current) {
-        return isEscapeLeading(current) && !escapeStarted && isQuotationOpen();
+    private boolean collectDelimiter(int current) {
+        if (!(isQuotationClosed() && isDelimiter(current))) return false;
+        endToken();
+        return true;
+    }
+
+    private boolean collectEscape(int current) {
+        return collectEscapeStart(current) || collectEscapeEnd(current);
+    }
+
+    private boolean collectEscapeEnd(int current) {
+        if (!escapeStarted) return false;
+        endEscape(current);
+        return true;
+    }
+
+    private boolean collectEscapeStart(int current) {
+        if (!isQuotationOpen() || !isEscapeLeading(current) || escapeStarted) return false;
+        startEscape(current);
+        return true;
+    }
+
+    private boolean collectQuotation(int current) {
+        return collectQuotationStart(current) || collectQuotationEnd(current);
+    }
+
+    private boolean collectQuotationEnd(int current) {
+        if (!(quotationMark == current && isQuotationMark(current))) return false;
+        closeQuotation(current);
+        return true;
+    }
+
+    private boolean collectQuotationStart(int current) {
+        if (!(isQuotationClosed() && isQuotationMark(current))) return false;
+        openQuotation(current);
+        return true;
     }
 
     private void endToken() {
@@ -65,20 +80,14 @@ class Tokenizer {
         return mark == '\'' || mark == '"';
     }
 
-    private void closeQuotation() {
+    private void closeQuotation(int current) {
+        builder.appendCodePoint(current);
         quotationMark = 0;
     }
 
     private void openQuotation(int current) {
+        builder.appendCodePoint(current);
         quotationMark = current;
-    }
-
-    private boolean canCloseQuotation(int current) {
-        return isQuotationMark(current) && quotationMark == current;
-    }
-
-    private boolean canOpenQuotation(int current) {
-        return isQuotationMark(current) && isQuotationClosed();
     }
 
     private boolean isDelimiter(int current) {
@@ -94,7 +103,8 @@ class Tokenizer {
         escapeStarted = false;
     }
 
-    private void startEscape() {
+    private void startEscape(int current) {
+        builder.appendCodePoint(current);
         escapeStarted = true;
     }
 
