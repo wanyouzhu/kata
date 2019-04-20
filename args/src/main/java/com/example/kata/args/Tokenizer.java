@@ -20,43 +20,89 @@ class Tokenizer {
     }
 
     private void tokenize() {
-        for (int i = 0; i < input.length(); ++i) {
-            if (input.charAt(i) == '\\' && !escapeStarted && quotationMark != 0) {
-                escapeStarted = true;
-                continue;
-            }
+        input.codePoints().forEach(this::collect);
+        endToken();
+    }
 
-            if (escapeStarted) {
-                builder.append(input.charAt(i));
-                escapeStarted = false;
-                continue;
-            }
-
-            if (isQuotationMark(input.charAt(i)) && quotationMark == 0) {
-                quotationMark = input.charAt(i);
-                continue;
-            }
-
-            if (isQuotationMark(input.charAt(i)) && quotationMark == input.charAt(i)) {
-                quotationMark = 0;
-                continue;
-            }
-
-            if (input.charAt(i) == ',' && quotationMark == 0) {
-                tokens.add(builder.toString());
-                builder = new StringBuilder();
-                continue;
-            }
-
-            builder.append(input.charAt(i));
+    private void collect(int current) {
+        if (canStartEscape(current)) {
+            startEscape();
+            return;
         }
-
-        if (builder.length() > 0) {
-            tokens.add(builder.toString());
+        if (canEndEscape()) {
+            endEscape(current);
+            return;
         }
+        if (canOpenQuotation(current)) {
+            openQuotation(current);
+            return;
+        }
+        if (canCloseQuotation(current)) {
+            closeQuotation();
+            return;
+        }
+        if (isDelimiter(current) && isQuotationClosed()) {
+            endToken();
+            return;
+        }
+        builder.appendCodePoint(current);
+    }
+
+    private boolean canEndEscape() {
+        return escapeStarted;
+    }
+
+    private boolean canStartEscape(int current) {
+        return isEscapeLeading(current) && !escapeStarted && isQuotationOpen();
+    }
+
+    private void endToken() {
+        tokens.add(builder.toString());
+        builder = new StringBuilder();
     }
 
     private boolean isQuotationMark(int mark) {
         return mark == '\'' || mark == '"';
+    }
+
+    private void closeQuotation() {
+        quotationMark = 0;
+    }
+
+    private void openQuotation(int current) {
+        quotationMark = current;
+    }
+
+    private boolean canCloseQuotation(int current) {
+        return isQuotationMark(current) && quotationMark == current;
+    }
+
+    private boolean canOpenQuotation(int current) {
+        return isQuotationMark(current) && isQuotationClosed();
+    }
+
+    private boolean isDelimiter(int current) {
+        return current == ',';
+    }
+
+    private boolean isQuotationClosed() {
+        return quotationMark == 0;
+    }
+
+    private void endEscape(int current) {
+        builder.appendCodePoint(current);
+        escapeStarted = false;
+    }
+
+    private void startEscape() {
+        escapeStarted = true;
+    }
+
+    private boolean isQuotationOpen() {
+        return quotationMark != 0;
+    }
+
+    private boolean isEscapeLeading(int current) {
+        return current == '\\';
     }
 }
