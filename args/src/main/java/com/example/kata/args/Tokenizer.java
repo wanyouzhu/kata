@@ -21,9 +21,14 @@ class Tokenizer {
 
     private void tokenize() {
         for (int i = 0; i < input.length(); ++i) {
-            if (input.charAt(i) == '\\' && !escapeStarted) {
-                builder.append(input.charAt(i));
+            if (input.charAt(i) == '\\' && !escapeStarted && quotationMark != 0) {
                 escapeStarted = true;
+                continue;
+            }
+
+            if (escapeStarted) {
+                builder.append(input.charAt(i));
+                escapeStarted = false;
                 continue;
             }
 
@@ -44,7 +49,6 @@ class Tokenizer {
             }
 
             builder.append(input.charAt(i));
-            escapeStarted = false;
         }
 
         if (builder.length() > 0) {

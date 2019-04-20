@@ -73,14 +73,14 @@ public class ValueParserTest {
     public void can_parse_single_value_from_quoted_string_that_contains_double_quotation_mark() {
         String input = "\"this is a \\\"string\\\" value\"";
         Value value = new ValueParser().parse(input, ValueType.STRING);
-        assertThat(value, is(Value.ofString("this is a \\\"string\\\" value")));
+        assertThat(value, is(Value.ofString("this is a \"string\" value")));
     }
 
     @Test
     public void can_parse_single_value_from_quoted_string_that_contains_single_quotation_mark() {
         String input = "'this is a \\'string\\' value'";
         Value value = new ValueParser().parse(input, ValueType.STRING);
-        assertThat(value, is(Value.ofString("this is a \\'string\\' value")));
+        assertThat(value, is(Value.ofString("this is a 'string' value")));
     }
 
     @Test
@@ -134,8 +134,22 @@ public class ValueParserTest {
 
     @Test
     public void can_parse_string_list_value_that_contains_backslashes() {
-        String input = "'[this, is\\d]', \"[that\\s, is]\"";
+        String input = "'[this, is \\d]', \"[that \\s, is]\"";
         Value value = new ValueParser().parse(input, ValueType.STRINGS);
-        assertThat(value, is(Value.ofStrings("[this, is\\d]", "[that\\s, is]")));
+        assertThat(value, is(Value.ofStrings("[this, is d]", "[that s, is]")));
+    }
+
+    @Test
+    public void backslashes_outside_quotation_should_NOT_be_treated_as_escape_chars() {
+        String input = "this is a \\string\\ value";
+        Value value = new ValueParser().parse(input, ValueType.STRING);
+        assertThat(value, is(Value.ofString("this is a \\string\\ value")));
+    }
+
+    @Test
+    public void backslashes_outside_quotation_should_NOT_be_treated_as_escape_chars_in_list_value() {
+        String input = "c:\\a.txt, d:\\b.txt";
+        Value value = new ValueParser().parse(input, ValueType.STRINGS);
+        assertThat(value, is(Value.ofStrings("c:\\a.txt", "d:\\b.txt")));
     }
 }

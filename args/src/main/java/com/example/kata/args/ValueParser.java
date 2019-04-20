@@ -31,7 +31,12 @@ class ValueParser {
 
     private String parseString(String input) {
         String trimmed = trim(input);
-        return strip(trimmed, getQuotationMark(trimmed));
+        String mark = getQuotationMark(trimmed);
+        return mark.length() > 0 ? parseQuotedString(trimmed, mark) : trimmed;
+    }
+
+    private String parseQuotedString(String trimmed, String mark) {
+        return strip(trimmed, mark).replaceAll("\\\\(.)", "$1");
     }
 
     private String getQuotationMark(String text) {
