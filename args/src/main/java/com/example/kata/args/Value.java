@@ -1,6 +1,6 @@
 package com.example.kata.args;
 
-import static com.google.common.collect.Lists.newArrayList;
+import com.google.common.collect.Lists;
 
 @lombok.Value
 class Value {
@@ -20,10 +20,10 @@ class Value {
     }
 
     static Value ofIntegers(Integer... value) {
-        return new Value(ValueType.INTEGERS, newArrayList(value));
+        return new Value(ValueType.INTEGERS, Lists.newArrayList(value));
     }
 
     static Value ofStrings(String... value) {
-        return new Value(ValueType.STRINGS, newArrayList(value));
+        return new Value(ValueType.STRINGS, Lists.newArrayList(value));
     }
 }
