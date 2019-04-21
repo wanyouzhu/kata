@@ -50,8 +50,8 @@ public class FizzBuzzTest {
 
     @Test
     public void should_report_turn_number_if_turn_is_NOT_multiples_of_three() {
-        assertThat(new FizzBuzz().report(13), is("13"));
-        assertThat(new FizzBuzz().report(23), is("23"));
+        assertThat(new FizzBuzz().report(11), is("11"));
+        assertThat(new FizzBuzz().report(61), is("61"));
         assertThat(new FizzBuzz().report(98), is("98"));
     }
 
@@ -88,5 +88,28 @@ public class FizzBuzzTest {
         assertThat(new FizzBuzz().report(15), is("fizzbuzz"));
         assertThat(new FizzBuzz().report(45), is("fizzbuzz"));
         assertThat(new FizzBuzz().report(90), is("fizzbuzz"));
+    }
+
+    @Test
+    public void should_report_fizz_if_turn_contains_number_three() {
+        assertThat(new FizzBuzz().report(13), is("fizz"));
+        assertThat(new FizzBuzz().report(23), is("fizz"));
+        assertThat(new FizzBuzz().report(31), is("fizz"));
+        assertThat(new FizzBuzz().report(38), is("fizz"));
+    }
+
+    @Test
+    public void should_report_buzz_if_turn_contains_number_five() {
+        assertThat(new FizzBuzz().report(58), is("buzz"));
+        assertThat(new FizzBuzz().report(52), is("buzz"));
+        assertThat(new FizzBuzz().report(5), is("buzz"));
+    }
+
+    @Test
+    public void should_report_fizzbuzz_if_turn_contains_number_five_or_three() {
+        assertThat(new FizzBuzz().report(51), is("fizzbuzz"));
+        assertThat(new FizzBuzz().report(15), is("fizzbuzz"));
+        assertThat(new FizzBuzz().report(35), is("fizzbuzz"));
+        assertThat(new FizzBuzz().report(53), is("fizzbuzz"));
     }
 }
