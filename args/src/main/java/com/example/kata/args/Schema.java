@@ -14,6 +14,19 @@ class Schema {
         Arrays.stream(input.split(";")).forEach(this::parseSingleOption);
     }
 
+    Option getOption(char flag) {
+        if (!options.containsKey(flag)) throw new ArgsException("No such option:" + flag);
+        return options.get(flag);
+    }
+
+    ValueType getOptionType(char flag) {
+        return getOption(flag).getType();
+    }
+
+    Value getOptionDefaultValue(char flag) {
+        return getOption(flag).getDefaultValue();
+    }
+
     private Option parseOption(String input) {
         String[] strings = input.split(":");
         if (strings.length != 3) throw new ArgsException("Bad schema!");
@@ -34,10 +47,6 @@ class Schema {
             case "strings": return new ValueParser().parse(valueString, ValueType.STRINGS);
             default: throw new ArgsException("Unrecognized option type: " + type);
         }
-    }
-
-    Option getOption(char flag) {
-        return options.get(flag);
     }
 
     private void parseSingleOption(String input) {

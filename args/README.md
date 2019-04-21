@@ -18,14 +18,7 @@ Tasks:
     * p:integer:1080 | 
     * v:boolean:false | -v true
     * v:boolean:false | -v
-    * v:boolean:false | 
-    * o:string:a.txt | -o b.txt
-    * o:string:a.txt | 
-    * w:integers:1,2,3 | -w 4,5
-    * w:integers:1,2,3 | 
-    * i:strings:a.txt,b.txt | -i x.log,y.log
-    * i:strings:a.txt,b.txt | 
-    * p:integer:1080; v:boolean:false -i:strings:test | -p 8888 -v true -i a.txt,b.txt
+    * p:integer:1080; v:boolean:false; i:strings:test | -p 8888 -v true -i a.txt,b.txt
 
 
 

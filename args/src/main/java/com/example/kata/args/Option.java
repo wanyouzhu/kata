@@ -4,4 +4,8 @@ package com.example.kata.args;
 class Option {
     private final char flag;
     private final Value defaultValue;
+
+    ValueType getType() {
+        return defaultValue.getType();
+    }
 }
