@@ -2,6 +2,7 @@
   <dictionary name="van">
     <words>
       <w>abababab</w>
+      <w>fizzbuzz</w>
       <w>nginx</w>
     </words>
   </dictionary>

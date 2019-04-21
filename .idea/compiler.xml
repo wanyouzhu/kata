@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="anagram" />
         <module name="args" />
+        <module name="fizzbuzz" />
       </profile>
     </annotationProcessing>
   </component>

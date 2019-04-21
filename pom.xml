@@ -12,6 +12,7 @@
     <modules>
         <module>anagram</module>
         <module>args</module>
+        <module>fizzbuzz</module>
     </modules>
 
 </project>
