@@ -112,4 +112,9 @@ public class FizzBuzzTest {
         assertThat(new FizzBuzz().report(35), is("fizzbuzz"));
         assertThat(new FizzBuzz().report(53), is("fizzbuzz"));
     }
+
+    @Test
+    public void report_all() {
+        new FizzBuzz().reportAll(System.out);
+    }
 }
