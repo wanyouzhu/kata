@@ -5,30 +5,36 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 class FizzBuzz {
-    List<String> getResult() {
-        return IntStream.range(1, 101).mapToObj(this::numberOff).collect(Collectors.toList());
+    private List<String> result;
+
+    FizzBuzz() {
+        this.result = IntStream.range(1, 101).mapToObj(FizzBuzz::resolve).collect(Collectors.toList());
     }
 
-    private String numberOff(int turn) {
-        if (isFizzBuzz(turn)) return "fizzbuzz";
+    private static String resolve(int turn) {
+        if (isFizz(turn) && isBuzz(turn)) return "fizzbuzz";
         if (isFizz(turn)) return "fizz";
         if (isBuzz(turn)) return "buzz";
         return String.valueOf(turn);
     }
 
-    private boolean isFizzBuzz(int turn) {
-        return isFizz(turn) && isBuzz(turn);
+    private static boolean isFizz(int turn) {
+        return isMultiplesOfNOrContainsN(turn, 3);
     }
 
-    private boolean isBuzz(int turn) {
-        return turnNumberIsMultiplesOfNOrContainsN(turn, 5);
+    private static boolean isBuzz(int turn) {
+        return isMultiplesOfNOrContainsN(turn, 5);
     }
 
-    private boolean isFizz(int turn) {
-        return turnNumberIsMultiplesOfNOrContainsN(turn, 3);
+    private static boolean isMultiplesOfNOrContainsN(int turn, int n) {
+        return turn % n == 0 || turn / 10 == n || turn % 10 == n;
     }
 
-    private boolean turnNumberIsMultiplesOfNOrContainsN(int turn, int n) {
-        return turn / 10 == n || turn % 10 == n || turn % n == 0;
+    List<String> getResult() {
+        return result;
+    }
+
+    String report(int turn) {
+        return result.get(turn - 1);
     }
 }
