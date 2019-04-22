@@ -7,114 +7,66 @@ import static org.junit.Assert.assertThat;
 
 public class FizzBuzzTest {
     @Test
-    public void should_report_one_in_turn_one() {
-        int turn = 1;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("1"));
+    public void should_output_result_of_100_turns() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().size(), is(100));
     }
 
     @Test
-    public void should_report_fizz_in_turn_three() {
-        int turn = 3;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("fizz"));
+    public void should_be_fizz_if_turn_number_is_multiples_of_3() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(3 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(6 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(9 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(99 - 1), is("fizz"));
     }
 
     @Test
-    public void should_report_fizz_in_turn_six() {
-        int turn = 6;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("fizz"));
+    public void should_be_turn_number_if_turn_number_is_NOT_multiples_of_3() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(1 - 1), is("1"));
+        assertThat(fizzBuzz.getResult().get(2 - 1), is("2"));
+        assertThat(fizzBuzz.getResult().get(11 - 1), is("11"));
+        assertThat(fizzBuzz.getResult().get(28 - 1), is("28"));
     }
 
     @Test
-    public void should_report_seven_in_turn_seven() {
-        int turn = 7;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("7"));
+    public void should_be_buzz_if_turn_number_is_multiples_of_5() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(5 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(10 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(20 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(100 - 1), is("buzz"));
     }
 
     @Test
-    public void should_report_fizz_in_turn_nine() {
-        int turn = 9;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("fizz"));
+    public void should_be_fizz_if_turn_number_contains_of_3() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(3 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(13 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(13 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(33 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(37 - 1), is("fizz"));
+        assertThat(fizzBuzz.getResult().get(93 - 1), is("fizz"));
     }
 
     @Test
-    public void should_report_fizz_if_turn_is_multiples_of_three() {
-        assertThat(new FizzBuzz().report(99), is("fizz"));
-        assertThat(new FizzBuzz().report(27), is("fizz"));
-        assertThat(new FizzBuzz().report(63), is("fizz"));
+    public void should_be_buzz_if_turn_number_contains_of_5() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(5 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(25 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(56 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(58 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(65 - 1), is("buzz"));
+        assertThat(fizzBuzz.getResult().get(85 - 1), is("buzz"));
     }
 
     @Test
-    public void should_report_turn_number_if_turn_is_NOT_multiples_of_three() {
-        assertThat(new FizzBuzz().report(11), is("11"));
-        assertThat(new FizzBuzz().report(61), is("61"));
-        assertThat(new FizzBuzz().report(98), is("98"));
-    }
-
-    @Test
-    public void should_report_buzz_in_turn_five() {
-        int turn = 5;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("buzz"));
-    }
-
-    @Test
-    public void should_report_buzz_in_turn_twenty() {
-        int turn = 20;
-        String report = new FizzBuzz().report(turn);
-        assertThat(report, is("buzz"));
-    }
-
-    @Test
-    public void should_report_buzz_if_turn_is_multiples_of_file() {
-        assertThat(new FizzBuzz().report(10), is("buzz"));
-        assertThat(new FizzBuzz().report(55), is("buzz"));
-        assertThat(new FizzBuzz().report(100), is("buzz"));
-    }
-
-    @Test
-    public void should_report_turn_number_if_turn_is_NOT_multiples_of_three_or_file() {
-        assertThat(new FizzBuzz().report(88), is("88"));
-        assertThat(new FizzBuzz().report(44), is("44"));
-        assertThat(new FizzBuzz().report(67), is("67"));
-    }
-
-    @Test
-    public void should_report_fizzbuzz_if_turn_is_fizz_and_buzz() {
-        assertThat(new FizzBuzz().report(15), is("fizzbuzz"));
-        assertThat(new FizzBuzz().report(45), is("fizzbuzz"));
-        assertThat(new FizzBuzz().report(90), is("fizzbuzz"));
-    }
-
-    @Test
-    public void should_report_fizz_if_turn_contains_number_three() {
-        assertThat(new FizzBuzz().report(13), is("fizz"));
-        assertThat(new FizzBuzz().report(23), is("fizz"));
-        assertThat(new FizzBuzz().report(31), is("fizz"));
-        assertThat(new FizzBuzz().report(38), is("fizz"));
-    }
-
-    @Test
-    public void should_report_buzz_if_turn_contains_number_five() {
-        assertThat(new FizzBuzz().report(58), is("buzz"));
-        assertThat(new FizzBuzz().report(52), is("buzz"));
-        assertThat(new FizzBuzz().report(5), is("buzz"));
-    }
-
-    @Test
-    public void should_report_fizzbuzz_if_turn_contains_number_five_or_three() {
-        assertThat(new FizzBuzz().report(51), is("fizzbuzz"));
-        assertThat(new FizzBuzz().report(15), is("fizzbuzz"));
-        assertThat(new FizzBuzz().report(35), is("fizzbuzz"));
-        assertThat(new FizzBuzz().report(53), is("fizzbuzz"));
-    }
-
-    @Test
-    public void report_all() {
-        new FizzBuzz().reportAll(System.out);
+    public void should_be_fizzbuzz_if_turn_number_is_fizz_and_buzz() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.getResult().get(15 - 1), is("fizzbuzz"));
+        assertThat(fizzBuzz.getResult().get(35 - 1), is("fizzbuzz"));
+        assertThat(fizzBuzz.getResult().get(57 - 1), is("fizzbuzz"));
+        assertThat(fizzBuzz.getResult().get(60 - 1), is("fizzbuzz"));
     }
 }

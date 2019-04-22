@@ -1,25 +1,34 @@
 package com.example.kata.fizzbuzz;
 
-import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 class FizzBuzz {
-    String report(int turn) {
-        if (isFizz(turn) && isBuzz(turn)) return "fizzbuzz";
-        if (isBuzz(turn)) return "buzz";
+    List<String> getResult() {
+        return IntStream.range(1, 101).mapToObj(this::numberOff).collect(Collectors.toList());
+    }
+
+    private String numberOff(int turn) {
+        if (isFizzBuzz(turn)) return "fizzbuzz";
         if (isFizz(turn)) return "fizz";
+        if (isBuzz(turn)) return "buzz";
         return String.valueOf(turn);
     }
 
-    void reportAll(PrintStream output) {
-        IntStream.range(1, 101).mapToObj(this::report).forEach(output::println);
+    private boolean isFizzBuzz(int turn) {
+        return isFizz(turn) && isBuzz(turn);
     }
 
     private boolean isBuzz(int turn) {
-        return turn % 5 == 0 || turn % 10 == 5 || turn / 10 == 5;
+        return turnNumberIsMultiplesOfNOrContainsN(turn, 5);
     }
 
     private boolean isFizz(int turn) {
-        return turn % 3 == 0 || turn % 10 == 3 || turn / 10 == 3;
+        return turnNumberIsMultiplesOfNOrContainsN(turn, 3);
+    }
+
+    private boolean turnNumberIsMultiplesOfNOrContainsN(int turn, int n) {
+        return turn / 10 == n || turn % 10 == n || turn % n == 0;
     }
 }
