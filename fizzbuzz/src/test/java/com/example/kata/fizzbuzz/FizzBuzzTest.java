@@ -37,28 +37,26 @@ public class FizzBuzzTest {
     }
 
     @Test
-    public void should_report_turn_number_if_turn_number_is_NOT_multiples_of_3_or_5() {
-        FizzBuzz fizzBuzz = new FizzBuzz();
-        assertThat(fizzBuzz.report(1), is("1"));
-        assertThat(fizzBuzz.report(2), is("2"));
-        assertThat(fizzBuzz.report(7), is("7"));
-    }
-
-    @Test
     public void should_report_fizz_if_turn_number_contains_3() {
         FizzBuzz fizzBuzz = new FizzBuzz();
         assertThat(fizzBuzz.report(3), is("fizz"));
         assertThat(fizzBuzz.report(13), is("fizz"));
-        assertThat(fizzBuzz.report(23), is("fizz"));
-        assertThat(fizzBuzz.report(37), is("fizz"));
+        assertThat(fizzBuzz.report(33), is("fizz"));
     }
 
     @Test
-    public void should_report_buzz_if_turn_number_contains_5() {
+    public void should_report_buzz_if_turn_number_contains_of_5() {
         FizzBuzz fizzBuzz = new FizzBuzz();
         assertThat(fizzBuzz.report(5), is("buzz"));
         assertThat(fizzBuzz.report(25), is("buzz"));
         assertThat(fizzBuzz.report(55), is("buzz"));
-        assertThat(fizzBuzz.report(58), is("buzz"));
+    }
+
+    @Test
+    public void should_report_turn_number_if_turn_number_is_NOT_multiples_of_3_or_5_or_does_NOT_contains_3_or_5() {
+        FizzBuzz fizzBuzz = new FizzBuzz();
+        assertThat(fizzBuzz.report(1), is("1"));
+        assertThat(fizzBuzz.report(2), is("2"));
+        assertThat(fizzBuzz.report(7), is("7"));
     }
 }

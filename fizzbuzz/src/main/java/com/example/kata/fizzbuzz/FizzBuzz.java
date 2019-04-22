@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.lang3.StringUtils.join;
+
 class FizzBuzz {
     private final List<String> result;
 
@@ -12,10 +15,15 @@ class FizzBuzz {
     }
 
     private static String resolve(int turn) {
-        if (isFizz(turn) && isBuzz(turn)) return "fizzbuzz";
-        if (isFizz(turn)) return "fizz";
-        if (isBuzz(turn)) return "buzz";
-        return String.valueOf(turn);
+        return defaultIfBlank(join(resolveFizz(turn), resolveBuzz(turn)), String.valueOf(turn));
+    }
+
+    private static String resolveFizz(int turn) {
+        return isFizz(turn) ? "fizz" : "";
+    }
+
+    private static String resolveBuzz(int turn) {
+        return isBuzz(turn) ? "buzz" : "";
     }
 
     private static boolean isFizz(int turn) {
