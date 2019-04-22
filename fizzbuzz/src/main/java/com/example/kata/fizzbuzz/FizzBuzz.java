@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 class FizzBuzz {
-    private List<String> result;
+    private final List<String> result;
 
     FizzBuzz() {
         this.result = IntStream.range(1, 101).mapToObj(FizzBuzz::resolve).collect(Collectors.toList());
