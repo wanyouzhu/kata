@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.apache.commons.lang3.StringUtils.join;
-
 class FizzBuzz {
     private final List<String> result;
 
@@ -15,26 +12,21 @@ class FizzBuzz {
     }
 
     private static String resolve(int turn) {
-        return defaultIfBlank(join(resolveFizz(turn), resolveBuzz(turn)), String.valueOf(turn));
-    }
-
-    private static String resolveFizz(int turn) {
-        return isFizz(turn) ? "fizz" : "";
-    }
-
-    private static String resolveBuzz(int turn) {
-        return isBuzz(turn) ? "buzz" : "";
-    }
-
-    private static boolean isFizz(int turn) {
-        return isMultiplesOfNOrContainsN(turn, 3);
+        if (isFizz(turn) && isBuzz(turn)) return "fizzbuzz";
+        if (isFizz(turn)) return "fizz";
+        if (isBuzz(turn)) return "buzz";
+        return String.valueOf(turn);
     }
 
     private static boolean isBuzz(int turn) {
-        return isMultiplesOfNOrContainsN(turn, 5);
+        return isMultiplesOfOrContains(turn, 5);
     }
 
-    private static boolean isMultiplesOfNOrContainsN(int turn, int n) {
+    private static boolean isFizz(int turn) {
+        return isMultiplesOfOrContains(turn, 3);
+    }
+
+    private static boolean isMultiplesOfOrContains(int turn, int n) {
         return turn % n == 0 || turn / 10 == n || turn % 10 == n;
     }
 
