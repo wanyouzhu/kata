@@ -1,24 +1,15 @@
 Tasks:
-* Parse value from string
-    * 8080
-    * true
-    * false
-    * x.txt
-    * 1,2,3
-    * a.log,b.log
-* Parse schema
-    * p:integer:1080
+* Parse arguments from schema
+    * Check number of arguments: n:integer:1; v:integer:5
+    * n:integer:8
     * v:boolean:false
+    * v:boolean:true
     * o:string:a.txt
-    * w:integers:1,2,3
+    * w:integers:1,2
     * i:strings:a.txt,b.txt
-    * p:integer:1080; v:boolean:false
-* Parse arguments
-    * p:integer:1080 | -p 8080
-    * p:integer:1080 | 
-    * v:boolean:false | -v true
+* Parse arguments from command
     * v:boolean:false | -v
-    * p:integer:1080; v:boolean:false; i:strings:test | -p 8888 -v true -i a.txt,b.txt
-
-
-
+    * v:integer:0 | -v 100
+    * -p 8080 -t test -s 1,2,3
+    * -v -5
+    

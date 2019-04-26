@@ -1,71 +1,51 @@
 package com.example.kata.args;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
-
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Map;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.trim;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 class Args {
-    private final Schema schema;
-    private Map<Character, Value> arguments = Maps.newHashMap();
+    private List<Argument> arguments;
 
-    Args(String schema, String command) {
-        this.schema = new Schema(schema);
-        parseOptionValues(command);
+    Args(String schema, String commandLine) {
+        this.arguments = Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
+        readValuesFromCommandLine(commandLine);
     }
 
-    private void parseOptionValues(String command) {
-        if (isBlank(command)) return;
-        ArrayDeque<String> queue = Queues.newArrayDeque(Arrays.asList(command.split(" ")));
-        while (!queue.isEmpty()) {
-            parseSingleOptionValue(queue);
+    private void readValuesFromCommandLine(String commandLine) {
+        String modified = commandLine;
+        for (Argument argument : arguments) {
+            modified = argument.readValue(modified);
         }
     }
 
-    private void parseSingleOptionValue(ArrayDeque<String> queue) {
-        char flag = parseFlag(queue);
-        Value value = parseOptionValue(queue, flag);
-        arguments.put(flag, value);
+    int getNumberOfArguments() {
+        return arguments.size();
     }
 
-    private Value parseOptionValue(ArrayDeque<String> queue, char flag) {
-        if (missingBooleanValuePart(queue, flag)) return Value.ofBoolean(true);
-        String valueString = queue.pollFirst();
-        return parseOptionValue(flag, valueString);
+    int getIntegerValue(char flag) {
+        return getArgument(flag).getIntegerValue();
     }
 
-    private boolean missingBooleanValuePart(ArrayDeque<String> queue, char flag) {
-        return getOptionType(flag).equals(ValueType.BOOLEAN) && (queue.isEmpty() || isFlag(queue.peekFirst()));
+    boolean getBooleanValue(char flag) {
+        return getArgument(flag).getBooleanValue();
     }
 
-    private char parseFlag(ArrayDeque<String> queue) {
-        String token = queue.peekFirst();
-        if (!isFlag(token)) throw new ArgsException("Flag required near: " + token);
-        return getFlag(queue.pollFirst());
+    String getStringValue(char flag) {
+        return getArgument(flag).getStringValue();
     }
 
-    Value getOptionValue(char flag) {
-        return arguments.getOrDefault(flag, schema.getOptionDefaultValue(flag));
+    List<Integer> getIntegersValue(char flag) {
+        return getArgument(flag).getIntegersValue();
     }
 
-    private Value parseOptionValue(char flag, String token) {
-        return new ValueParser().parse(token, getOptionType(flag));
+    List<String> getStringsValue(char flag) {
+        return getArgument(flag).getStringsValue();
     }
 
-    private ValueType getOptionType(char flag) {
-        return schema.getOptionType(flag);
-    }
-
-    private char getFlag(String token) {
-        return trim(token).charAt(1);
-    }
-
-    private boolean isFlag(String token) {
-        return trim(token).matches("-[a-zA-Z]");
+    private Argument getArgument(char flag) {
+        Supplier<ArgsException> argsException = () -> new ArgsException("Argument not exist: " + flag);
+        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(argsException);
     }
 }
