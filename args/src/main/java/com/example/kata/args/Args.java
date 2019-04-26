@@ -6,18 +6,26 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class Args {
-    private List<Argument> arguments;
+    private final List<Argument> arguments;
 
     Args(String schema, String commandLine) {
-        this.arguments = Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
-        readValuesFromCommandLine(commandLine);
+        this.arguments = parseArgumentsFromSchema(schema);
+        mergeArgumentValuesFromCommandLine(commandLine);
     }
 
-    private void readValuesFromCommandLine(String commandLine) {
+    private List<Argument> parseArgumentsFromSchema(String schema) {
+        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
+    }
+
+    private void mergeArgumentValuesFromCommandLine(String commandLine) {
         String modified = commandLine;
         for (Argument argument : arguments) {
-            modified = argument.readValue(modified);
+            modified = argument.mergeValueFromCommandLine(modified);
         }
+    }
+
+    boolean getBooleanValue(char flag) {
+        return getArgument(flag).getBooleanValue();
     }
 
     int getNumberOfArguments() {
@@ -26,10 +34,6 @@ class Args {
 
     int getIntegerValue(char flag) {
         return getArgument(flag).getIntegerValue();
-    }
-
-    boolean getBooleanValue(char flag) {
-        return getArgument(flag).getBooleanValue();
     }
 
     String getStringValue(char flag) {
@@ -45,7 +49,7 @@ class Args {
     }
 
     private Argument getArgument(char flag) {
-        Supplier<ArgsException> argsException = () -> new ArgsException("Argument not exist: " + flag);
+        Supplier<ArgsException> argsException = () -> new ArgsException("Flag not exist: " + flag);
         return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(argsException);
     }
 }

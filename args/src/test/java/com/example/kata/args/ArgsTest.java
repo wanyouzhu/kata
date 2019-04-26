@@ -17,10 +17,10 @@ public class ArgsTest {
 
     @Test
     public void can_parse_integer_values_from_schema() {
-        String schema = "n:integer:8";
+        String schema = "n:integer:1";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getIntegerValue('n'), is(8));
+        assertThat(args.getIntegerValue('n'), is(1));
     }
 
     @Test
@@ -40,11 +40,11 @@ public class ArgsTest {
     }
 
     @Test(expected = ArgsException.class)
-    public void can_parse_malformed_boolean_values_from_schema() {
-        String schema = "n:boolean:malformed";
+    public void should_reject_malformed_boolean_values_from_schema() {
+        String schema = "n:boolean:xxx";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getBooleanValue('n'), is(false));
+        assertThat(args.getBooleanValue('n'), is("matter nothing"));
     }
 
     @Test
@@ -72,7 +72,15 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_missing_boolean_values_from_command_line() {
+    public void can_parse_values_from_command_line() {
+        String schema = "n:integer:0";
+        String commandLine = "-n 100";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getIntegerValue('n'), is(100));
+    }
+
+    @Test
+    public void can_parse_flag_only_arguments_from_command_line() {
         String schema = "n:boolean:false";
         String commandLine = "-n";
         Args args = new Args(schema, commandLine);
@@ -80,28 +88,20 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_values_from_command_line() {
-        String schema = "n:integer:0";
-        String commandLine = "-n 300";
-        Args args = new Args(schema, commandLine);
-        assertThat(args.getIntegerValue('n'), is(300));
-    }
-
-    @Test
-    public void can_parse_multiple_values_from_command_line() {
-        String schema = "n:integer:0; b:boolean:false; i:strings:a,b,c";
-        String commandLine = "-n 300 -b true";
-        Args args = new Args(schema, commandLine);
-        assertThat(args.getIntegerValue('n'), is(300));
-        assertThat(args.getBooleanValue('b'), is(true));
-        assertThat(args.getStringsValue('i'), is(ImmutableList.of("a", "b", "c")));
-    }
-
-    @Test
     public void can_parse_negative_integer_values_from_command_line() {
-        String schema = "n:integer:0; b:boolean:false";
-        String commandLine = "-n -300 -b";
+        String schema = "n:integer:0";
+        String commandLine = "-n -1";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getIntegerValue('n'), is(-300));
+        assertThat(args.getIntegerValue('n'), is(-1));
+    }
+
+    @Test
+    public void can_parse_multiple_arguments_from_command_line() {
+        String schema = "p:integer:0; t:string:x; s:integers:1";
+        String commandLine = "-p -5 -t test -s 1,2";
+        Args args = new Args(schema, commandLine);
+        assertThat(args.getIntegerValue('p'), is(-5));
+        assertThat(args.getStringValue('t'), is("test"));
+        assertThat(args.getIntegersValue('s'), is(ImmutableList.of(1, 2)));
     }
 }

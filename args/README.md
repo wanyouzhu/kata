@@ -8,8 +8,8 @@ Tasks:
     * w:integers:1,2
     * i:strings:a.txt,b.txt
 * Parse arguments from command
-    * v:boolean:false | -v
     * v:integer:0 | -v 100
-    * -p 8080 -t test -s 1,2,3
+    * v:boolean:false | -v
     * -v -5
+    * -p 8080 -t test -s 1,2,3
     
