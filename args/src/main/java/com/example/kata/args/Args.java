@@ -2,7 +2,6 @@ package com.example.kata.args;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class Args {
@@ -13,27 +12,16 @@ class Args {
         mergeArgumentValuesFromCommandLine(commandLine);
     }
 
-    private List<Argument> parseArgumentsFromSchema(String schema) {
-        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
-    }
-
-    private void mergeArgumentValuesFromCommandLine(String commandLine) {
-        String modified = commandLine;
-        for (Argument argument : arguments) {
-            modified = argument.mergeValueFromCommandLine(modified);
-        }
-    }
-
-    boolean getBooleanValue(char flag) {
-        return getArgument(flag).getBooleanValue();
-    }
-
     int getNumberOfArguments() {
         return arguments.size();
     }
 
     int getIntegerValue(char flag) {
         return getArgument(flag).getIntegerValue();
+    }
+
+    boolean getBooleanValue(char flag) {
+        return getArgument(flag).getBooleanValue();
     }
 
     String getStringValue(char flag) {
@@ -49,7 +37,16 @@ class Args {
     }
 
     private Argument getArgument(char flag) {
-        Supplier<ArgsException> argsException = () -> new ArgsException("Flag not exist: " + flag);
-        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(argsException);
+        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(() -> new ArgsException("Unknown flag: " + flag));
+    }
+
+    private void mergeArgumentValuesFromCommandLine(String commandLine) {
+        for (Argument argument : arguments) {
+            argument.extractValueFromCommand(commandLine);
+        }
+    }
+
+    private List<Argument> parseArgumentsFromSchema(String schema) {
+        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
     }
 }
