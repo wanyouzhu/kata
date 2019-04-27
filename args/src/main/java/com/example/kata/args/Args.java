@@ -5,19 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class Args {
-    private final  List<Argument> arguments;
+    private final List<Argument> arguments;
 
     Args(String schema, String commandLine) {
         this.arguments = parseArgumentsFromSchema(schema);
-        mergeArgumentValuesFromCommandLine(commandLine);
-    }
-
-    private void mergeArgumentValuesFromCommandLine(String commandLine) {
-        arguments.forEach(argument -> argument.mergeValueFromCommandLine(commandLine));
-    }
-
-    private List<Argument> parseArgumentsFromSchema(String schema) {
-        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
+        resolveArgumentValues(commandLine);
     }
 
     int getNumberOfArguments() {
@@ -30,5 +22,13 @@ class Args {
 
     private Argument getArgument(char flag) {
         return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(() -> new ArgsException("Flag not found: " + flag));
+    }
+
+    private List<Argument> parseArgumentsFromSchema(String schema) {
+        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
+    }
+
+    private void resolveArgumentValues(String commandLine) {
+        arguments.forEach(argument -> argument.resolveValue(commandLine));
     }
 }

@@ -1,11 +1,11 @@
 package com.example.kata.args;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
 
 public class ArgsTest {
     @Test
@@ -25,7 +25,7 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_true_values_from_schema() {
+    public void can_parse_true_boolean_values_from_schema() {
         String schema = "n:boolean:true";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
@@ -33,7 +33,7 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_false_values_from_schema() {
+    public void can_parse_false_boolean_values_from_schema() {
         String schema = "n:boolean:false";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
@@ -41,7 +41,7 @@ public class ArgsTest {
     }
 
     @Test(expected = ArgsException.class)
-    public void should_reject_schema_with_malformed_boolean_values() {
+    public void should_reject_parsing_if_schema_contains_malformed_boolean_value() {
         String schema = "n:boolean:malformed";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
@@ -50,10 +50,10 @@ public class ArgsTest {
 
     @Test
     public void can_parse_string_values_from_schema() {
-        String schema = "n:string:a";
+        String schema = "n:string:x";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is("a"));
+        assertThat(args.getValue('n'), is("x"));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ArgsTest {
         String schema = "n:integers:1,2";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(Lists.newArrayList(1, 2)));
+        assertThat(args.getValue('n'), is(ImmutableList.of(1, 2)));
     }
 
     @Test
@@ -69,19 +69,19 @@ public class ArgsTest {
         String schema = "n:strings:a,b";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(Lists.newArrayList("a", "b")));
+        assertThat(args.getValue('n'), is(ImmutableList.of("a", "b")));
     }
 
     @Test
     public void can_parse_values_from_command_line() {
         String schema = "n:integer:0";
-        String commandLine = "-n 8080";
+        String commandLine = "-n 800";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(8080));
+        assertThat(args.getValue('n'), is(800));
     }
 
     @Test
-    public void can_parse_boolean_values_from_flag_only_command_line() {
+    public void can_parse_default_boolean_values_from_flag_only_command_line() {
         String schema = "n:boolean:false";
         String commandLine = "-n";
         Args args = new Args(schema, commandLine);
@@ -89,20 +89,20 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_negative_integer_values_from_command_line() {
-        String schema = "n:integer:0; t:boolean:true";
-        String commandLine = "-n -5 -t";
+    public void can_parse_negative_integer_values_from_schema() {
+        String schema = "n:integer:0";
+        String commandLine = "-n -100";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(-5));
+        assertThat(args.getValue('n'), is(-100));
     }
 
     @Test
-    public void can_parse_multiple_arguments_in_single_command_line() {
-        String schema = "n:integer:0; t:boolean:false; v:strings:a,b";
-        String commandLine = "-n -5 -t -v x,y,z";
+    public void can_parse_multiple_arguments_from_command_line() {
+        String schema = "n:integer:0; v:boolean:false; x:strings:x ";
+        String commandLine = "-n -100 -v -x x,y,z";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(-5));
-        assertThat(args.getValue('t'), is(true));
-        assertThat(args.getValue('v'), is(ImmutableList.of("x", "y", "z")));
+        assertThat(args.getValue('n'), is(-100));
+        assertThat(args.getValue('v'), is(true));
+        assertThat(args.getValue('x'), is(ImmutableList.of("x", "y", "z")));
     }
 }

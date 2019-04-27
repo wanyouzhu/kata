@@ -4,6 +4,7 @@ Tasks:
     * schema = "n:integer:8" | commandLine = ""
     * schema = "v:boolean:false" | commandLine = ""
     * schema = "v:boolean:true" | commandLine = ""
+    * schema = "v:boolean:malformed" | commandLine = ""
     * schema = "o:string:a.txt" | commandLine = ""
     * schema = "w:integers:1,2" | commandLine = ""
     * schema = "i:strings:a.txt,b.txt" | commandLine = ""
