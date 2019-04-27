@@ -3,7 +3,6 @@ package com.example.kata.args;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,42 +22,6 @@ class Argument {
         this.value = parseValue(extractValuePart(segment));
     }
 
-    char getFlag() {
-        return flag;
-    }
-
-    int getIntegerValue() {
-        return (Integer) value;
-    }
-
-    boolean getBooleanValue() {
-        return (Boolean) value;
-    }
-
-    String getStringValue() {
-        return (String) value;
-    }
-
-    List<Integer> getIntegersValue() {
-        return (List<Integer>) value;
-    }
-
-    List<String> getStringsValue() {
-        return (List<String>) value;
-    }
-
-    private char parseFlag(String segment) {
-        return trim(splitIntoParts(segment)[0]).charAt(0);
-    }
-
-    private String parseType(String segment) {
-        return trim(splitIntoParts(segment)[1]);
-    }
-
-    private String extractValuePart(String segment) {
-        return trim(splitIntoParts(segment)[2]);
-    }
-
     private Object parseValue(String valuePart) {
         switch (type) {
             case "integer": return parseInteger(valuePart);
@@ -70,20 +33,16 @@ class Argument {
         }
     }
 
+    private int parseInteger(String valuePart) {
+        return Integer.parseInt(trim(valuePart));
+    }
+
     private Object parseStrings(String valuePart) {
-        return splitListValues(valuePart).map(this::parseString).collect(Collectors.toList());
+        return splitList(valuePart).map(this::parseString).collect(Collectors.toList());
     }
 
     private Object parseIntegers(String valuePart) {
-        return splitListValues(valuePart).map(this::parseInteger).collect(Collectors.toList());
-    }
-
-    private Stream<String> splitListValues(String valuePart) {
-        return Arrays.stream(valuePart.split(","));
-    }
-
-    private Object parseString(String valuePart) {
-        return trim(valuePart);
+        return splitList(valuePart).map(this::parseInteger).collect(Collectors.toList());
     }
 
     private Object parseBoolean(String valuePart) {
@@ -92,26 +51,46 @@ class Argument {
         throw new ArgsException("Malformed boolean value: " + valuePart);
     }
 
-    private Object parseInteger(String valuePart) {
-        return Integer.parseInt(trim(valuePart));
+    private Object parseString(String valuePart) {
+        return trim(valuePart);
     }
 
-    private String[] splitIntoParts(String segment) {
+    private String extractValuePart(String segment) {
+        return trim(splitIntParts(segment)[2]);
+    }
+
+    private String[] splitIntParts(String segment) {
         return segment.split(":");
     }
 
-    void extractValueFromCommand(String commandLine) {
-        Pattern pattern = Pattern.compile("^.*(-" + flag + "(?:\\s*$|((?:[^-]|-\\d)+))).*$");
+    private Stream<String> splitList(String valuePart) {
+        return Arrays.stream(valuePart.split(","));
+    }
+
+    private String parseType(String segment) {
+        return trim(splitIntParts(segment)[1]);
+    }
+
+    private char parseFlag(String segment) {
+        return trim(splitIntParts(segment)[0]).charAt(0);
+    }
+
+    char getFlag() {
+        return flag;
+    }
+
+    <T> T getValue() {
+        return (T) value;
+    }
+
+    void mergeValueFromCommandLine(String commandLine) {
+        Pattern pattern = Pattern.compile("^.*(-" + flag + "(?:\\s+((?:[^-]|-\\d)+))?).*$");
         Matcher matcher = pattern.matcher(commandLine);
         if (!matcher.matches()) return;
-        this.value = parseValueFromMatchResult(matcher);
+        this.value = isMissingValueBooleanArgument(matcher) ? Boolean.valueOf(true) : parseValue(trim(matcher.group(2)));
     }
 
-    private Object parseValueFromMatchResult(Matcher matcher) {
-        return isBooleanFlagOnlyArgument(matcher) ? Boolean.valueOf(true) : parseValue(trim(matcher.group(2)));
-    }
-
-    private boolean isBooleanFlagOnlyArgument(Matcher matcher) {
+    private boolean isMissingValueBooleanArgument(Matcher matcher) {
         return StringUtils.equals(type, "boolean") && isBlank(matcher.group(2));
     }
 }
