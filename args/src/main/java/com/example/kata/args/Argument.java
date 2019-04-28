@@ -3,7 +3,6 @@ package com.example.kata.args;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,14 +19,7 @@ class Argument {
     Argument(String segment) {
         this.flag = parseFlag(segment);
         this.type = parseType(segment);
-        this.value = parseValue(getValuePart(segment));
-    }
-
-    void resolveValue(String commandLine) {
-        Pattern pattern = Pattern.compile("^.*(-" + flag + "(?:\\s+((?:[^-]|-\\d)+))?).*$");
-        Matcher matcher = pattern.matcher(commandLine);
-        if (!matcher.matches()) return;
-        this.value = isBooleanFlagWithoutValuePart(matcher) ? Boolean.valueOf(true) : parseValue(matcher.group(2));
+        this.value = parseDefaultValue(segment);
     }
 
     char getFlag() {
@@ -38,12 +30,27 @@ class Argument {
         return (T) value;
     }
 
+    void resolveValue(String commandLine) {
+        Pattern pattern = Pattern.compile("^.*(-" + flag + "(?:\\s+((?:[^-]|-\\d)+))?).*$");
+        Matcher matcher = pattern.matcher(commandLine);
+        if (!matcher.matches()) return;
+        if (StringUtils.equals(type, "boolean") && isBlank(matcher.group(2))) {
+            this.value = true;
+            return;
+        }
+        this.value = parseValue(trim(matcher.group(2)));
+    }
+
     private char parseFlag(String segment) {
         return getPart(segment, 0).charAt(0);
     }
 
     private String parseType(String segment) {
         return getPart(segment, 1);
+    }
+
+    private Object parseDefaultValue(String segment) {
+        return parseValue(getPart(segment, 2));
     }
 
     private Object parseValue(String valuePart) {
@@ -57,8 +64,8 @@ class Argument {
         }
     }
 
-    private Object parseInteger(String valuePart) {
-        return Integer.parseInt(trim(valuePart));
+    private int parseInteger(String valuePart) {
+        return Integer.parseInt(valuePart);
     }
 
     private Object parseBoolean(String valuePart) {
@@ -79,19 +86,11 @@ class Argument {
         return parseList(valuePart, this::parseString);
     }
 
-    private List<Object> parseList(String valuePart, Function<String, Object> elementParser) {
-        return Arrays.stream(valuePart.split(",")).map(elementParser).collect(Collectors.toList());
-    }
-
-    private String getValuePart(String segment) {
-        return getPart(segment, 2);
+    private Object parseList(String valuePart, Function<String, Object> parser) {
+        return Arrays.stream(valuePart.split(",")).map(parser).collect(Collectors.toList());
     }
 
     private String getPart(String segment, int i) {
         return trim(segment.split(":")[i]);
-    }
-
-    private boolean isBooleanFlagWithoutValuePart(Matcher matcher) {
-        return StringUtils.equals(type, "boolean") && isBlank(matcher.group(2));
     }
 }

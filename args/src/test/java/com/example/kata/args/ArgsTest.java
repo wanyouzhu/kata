@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 public class ArgsTest {
     @Test
     public void number_of_parsed_arguments_should_be_correct() {
-        String schema = "n:integer:1; v:integer:5";
+        String schema = "n:integer:8; t:integer:1";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
         assertThat(args.getNumberOfArguments(), is(2));
@@ -41,7 +41,7 @@ public class ArgsTest {
     }
 
     @Test(expected = ArgsException.class)
-    public void should_reject_parsing_if_schema_contains_malformed_boolean_value() {
+    public void should_reject_schemas_that_contains_malformed_boolean_values() {
         String schema = "n:boolean:malformed";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
@@ -66,18 +66,18 @@ public class ArgsTest {
 
     @Test
     public void can_parse_strings_values_from_schema() {
-        String schema = "n:strings:a,b";
+        String schema = "n:strings:x,y";
         String commandLine = "";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(ImmutableList.of("a", "b")));
+        assertThat(args.getValue('n'), is(ImmutableList.of("x", "y")));
     }
 
     @Test
     public void can_parse_values_from_command_line() {
         String schema = "n:integer:0";
-        String commandLine = "-n 800";
+        String commandLine = "-n 100";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(800));
+        assertThat(args.getValue('n'), is(100));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ArgsTest {
     }
 
     @Test
-    public void can_parse_negative_integer_values_from_schema() {
+    public void can_parse_negative_integer_values_from_command_line() {
         String schema = "n:integer:0";
         String commandLine = "-n -100";
         Args args = new Args(schema, commandLine);
@@ -98,11 +98,11 @@ public class ArgsTest {
 
     @Test
     public void can_parse_multiple_arguments_from_command_line() {
-        String schema = "n:integer:0; v:boolean:false; x:strings:x ";
-        String commandLine = "-n -100 -v -x x,y,z";
+        String schema = "p:integer:0; t:boolean:false; s:integers:0";
+        String commandLine = "-p -5 -t -s 1,2,3";
         Args args = new Args(schema, commandLine);
-        assertThat(args.getValue('n'), is(-100));
-        assertThat(args.getValue('v'), is(true));
-        assertThat(args.getValue('x'), is(ImmutableList.of("x", "y", "z")));
+        assertThat(args.getValue('p'), is(-5));
+        assertThat(args.getValue('t'), is(true));
+        assertThat(args.getValue('s'), is(ImmutableList.of(1, 2, 3)));
     }
 }

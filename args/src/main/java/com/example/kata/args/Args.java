@@ -2,14 +2,15 @@ package com.example.kata.args;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class Args {
     private final List<Argument> arguments;
 
     Args(String schema, String commandLine) {
-        this.arguments = parseArgumentsFromSchema(schema);
-        resolveArgumentValues(commandLine);
+        this.arguments = parseArguments(schema);
+        resolveValues(commandLine);
     }
 
     int getNumberOfArguments() {
@@ -20,15 +21,16 @@ class Args {
         return getArgument(flag).getValue();
     }
 
-    private Argument getArgument(char flag) {
-        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(() -> new ArgsException("Flag not found: " + flag));
-    }
-
-    private List<Argument> parseArgumentsFromSchema(String schema) {
+    private List<Argument> parseArguments(String schema) {
         return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
     }
 
-    private void resolveArgumentValues(String commandLine) {
+    private Argument getArgument(char flag) {
+        Supplier<ArgsException> exception = () -> new ArgsException("Argument not found: " + flag);
+        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(exception);
+    }
+
+    private void resolveValues(String commandLine) {
         arguments.forEach(argument -> argument.resolveValue(commandLine));
     }
 }
