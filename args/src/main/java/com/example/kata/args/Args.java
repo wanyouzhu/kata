@@ -12,23 +12,23 @@ class Args {
         resolveValues(commandLine);
     }
 
-    private List<Argument> parseArguments(String schema) {
-        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
+    private void resolveValues(String commandLine) {
+        arguments.forEach(argument -> argument.resolveValue(commandLine));
     }
 
-    <T> T getValue(char flag) {
-        return getArgument(flag).getValue();
+    private List<Argument> parseArguments(String schema) {
+        return Arrays.stream(schema.split(";")).map(Argument::new).collect(Collectors.toList());
     }
 
     int getNumberOfArguments() {
         return arguments.size();
     }
 
-    private Argument getArgument(char flag) {
-        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(() -> new ArgsException("Flag not found: " + flag));
+    <T> T getValue(char n) {
+        return getArgument(n).getValue();
     }
 
-    private void resolveValues(String commandLine) {
-        arguments.forEach(argument -> argument.resolveValue(commandLine));
+    private Argument getArgument(char flag) {
+        return arguments.stream().filter(x -> x.getFlag() == flag).findFirst().orElseThrow(() -> new ArgsException("Flag not found: " + flag));
     }
 }

@@ -23,12 +23,12 @@ class Argument {
         this.value = parseDefaultValue(segment);
     }
 
-    private char parseFlag(String segment) {
-        return getSchemaPart(segment, 0).charAt(0);
-    }
-
     private String parseType(String segment) {
         return getSchemaPart(segment, 1);
+    }
+
+    private char parseFlag(String segment) {
+        return getSchemaPart(segment, 0).charAt(0);
     }
 
     private Object parseDefaultValue(String segment) {
@@ -40,14 +40,14 @@ class Argument {
             case "integer": return parseInteger(valuePart);
             case "boolean": return parseBoolean(valuePart);
             case "string": return parseString(valuePart);
-            case "integers": return parseIntegers(valuePart);
             case "strings": return parseStrings(valuePart);
+            case "integers": return parseIntegers(valuePart);
             default: throw new ArgsException("Unknown value type: " + type);
         }
     }
 
     private Object parseInteger(String valuePart) {
-        return Integer.parseInt(valuePart);
+        return Integer.parseInt(trim(valuePart));
     }
 
     private Object parseBoolean(String valuePart) {
@@ -60,14 +60,12 @@ class Argument {
         return trim(valuePart);
     }
 
-    private Object parseIntegers(String valuePart) {
-        Function<String, Object> parseInteger = this::parseInteger;
-        return parseList(valuePart, parseInteger);
+    private Object parseStrings(String valuePart) {
+        return parseList(valuePart, this::parseString);
     }
 
-    private Object parseStrings(String valuePart) {
-        Function<String, Object> parseString = this::parseString;
-        return parseList(valuePart, parseString);
+    private Object parseIntegers(String valuePart) {
+        return parseList(valuePart, this::parseInteger);
     }
 
     private List<Object> parseList(String valuePart, Function<String, Object> elementParser) {
@@ -90,10 +88,11 @@ class Argument {
         Pattern pattern = Pattern.compile("^.*-" + flag + "(?:\\s((?:[^-]|-\\d)+))?.*$");
         Matcher matcher = pattern.matcher(commandLine);
         if (!matcher.matches()) return;
-        this.value = isBooleanMissingPart(matcher) ? Boolean.valueOf(true) : parseValue(trim(matcher.group(1)));
-    }
-
-    private boolean isBooleanMissingPart(Matcher matcher) {
-        return StringUtils.equals(type, "boolean") && isBlank(matcher.group(1));
+        if (StringUtils.equals(type, "boolean") && isBlank(matcher.group(1))) {
+            this.value = true;
+        }
+        else {
+            this.value = parseValue(trim(matcher.group(1)));
+        }
     }
 }
