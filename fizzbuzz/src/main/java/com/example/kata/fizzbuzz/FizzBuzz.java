@@ -1,40 +1,22 @@
 package com.example.kata.fizzbuzz;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 class FizzBuzz {
-    private final List<String> result;
-
-    FizzBuzz() {
-        this.result = IntStream.range(1, 101).mapToObj(FizzBuzz::resolve).collect(Collectors.toList());
-    }
-
-    private static String resolve(int turn) {
+    String report(int turn) {
         if (isFizz(turn) && isBuzz(turn)) return "fizzbuzz";
         if (isFizz(turn)) return "fizz";
         if (isBuzz(turn)) return "buzz";
         return String.valueOf(turn);
     }
 
-    private static boolean isBuzz(int turn) {
+    private boolean isBuzz(int turn) {
         return isMultiplesOfOrContains(turn, 5);
     }
 
-    private static boolean isFizz(int turn) {
+    private boolean isFizz(int turn) {
         return isMultiplesOfOrContains(turn, 3);
     }
 
-    private static boolean isMultiplesOfOrContains(int turn, int n) {
+    private boolean isMultiplesOfOrContains(int turn, int n) {
         return turn % n == 0 || turn / 10 == n || turn % 10 == n;
-    }
-
-    List<String> getResult() {
-        return result;
-    }
-
-    String report(int turn) {
-        return result.get(turn - 1);
     }
 }
