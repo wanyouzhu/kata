@@ -12,37 +12,49 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.trim;
 
-class Argument {
-    private final char flag;
+class ValueType {
     private final String type;
+
+    ValueType(String type) {
+        this.type = type;
+    }
+
+    String getType() {
+        return type;
+    }
+}
+
+class Argument {
+    private char flag;
+    private ValueType type;
     private Object value;
 
     Argument(String segment) {
-        this.flag = parseFlag(segment);
-        this.type = parseType(segment);
-        this.value = parseDefaultValue(segment);
+        parseFlag(getSchemaPart(segment, 0));
+        parseType(getSchemaPart(segment, 1));
+        parseDefaultValue(segment);
     }
 
-    private String parseType(String segment) {
-        return getSchemaPart(segment, 1);
+    private void parseDefaultValue(String segment) {
+        this.value = parseValue(getSchemaPart(segment, 2));
     }
 
-    private char parseFlag(String segment) {
-        return getSchemaPart(segment, 0).charAt(0);
+    private void parseType(String typePart) {
+        this.setType(typePart);
     }
 
-    private Object parseDefaultValue(String segment) {
-        return parseValue(getSchemaPart(segment, 2));
+    private void parseFlag(String flagPart) {
+        this.flag = flagPart.charAt(0);
     }
 
     private Object parseValue(String valuePart) {
-        switch (type) {
+        switch (getType()) {
             case "integer": return parseInteger(valuePart);
             case "boolean": return parseBoolean(valuePart);
             case "string": return parseString(valuePart);
             case "strings": return parseStrings(valuePart);
             case "integers": return parseIntegers(valuePart);
-            default: throw new ArgsException("Unknown value type: " + type);
+            default: throw new ArgsException("Unknown value type: " + getType());
         }
     }
 
@@ -92,6 +104,14 @@ class Argument {
     }
 
     private boolean isBooleanMissingValue(Matcher matcher) {
-        return StringUtils.equals(type, "boolean") && isBlank(matcher.group(1));
+        return StringUtils.equals(getType(), "boolean") && isBlank(matcher.group(1));
+    }
+
+    private String getType() {
+        return type.getType();
+    }
+
+    private void setType(String type) {
+        this.type = new ValueType(type);
     }
 }
