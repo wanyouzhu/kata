@@ -4,13 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.trim;
+import static org.apache.commons.lang3.StringUtils.*;
 
 class ValueType {
     private final String type;
@@ -22,39 +22,21 @@ class ValueType {
     String getType() {
         return type;
     }
-}
 
-class Argument {
-    private char flag;
-    private ValueType type;
-    private Object value;
-
-    Argument(String segment) {
-        parseFlag(getSchemaPart(segment, 0));
-        parseType(getSchemaPart(segment, 1));
-        parseDefaultValue(segment);
-    }
-
-    private void parseDefaultValue(String segment) {
-        this.value = parseValue(getSchemaPart(segment, 2));
-    }
-
-    private void parseType(String typePart) {
-        this.setType(typePart);
-    }
-
-    private void parseFlag(String flagPart) {
-        this.flag = flagPart.charAt(0);
-    }
-
-    private Object parseValue(String valuePart) {
+    Object parseValue(String valuePart) {
         switch (getType()) {
-            case "integer": return parseInteger(valuePart);
-            case "boolean": return parseBoolean(valuePart);
-            case "string": return parseString(valuePart);
-            case "strings": return parseStrings(valuePart);
-            case "integers": return parseIntegers(valuePart);
-            default: throw new ArgsException("Unknown value type: " + getType());
+            case "integer":
+                return parseInteger(valuePart);
+            case "boolean":
+                return parseBoolean(valuePart);
+            case "string":
+                return parseString(valuePart);
+            case "strings":
+                return parseStrings(valuePart);
+            case "integers":
+                return parseIntegers(valuePart);
+            default:
+                throw new ArgsException("Unknown value type: " + getType());
         }
     }
 
@@ -63,6 +45,7 @@ class Argument {
     }
 
     private Object parseBoolean(String valuePart) {
+        if (isBlank(valuePart)) return true;
         if (StringUtils.equals(trim(valuePart), "true")) return true;
         if (StringUtils.equals(trim(valuePart), "false")) return false;
         throw new ArgsException("Malformed boolean value: " + valuePart);
@@ -83,35 +66,69 @@ class Argument {
     private List<Object> parseList(String valuePart, Function<String, Object> elementParser) {
         return Arrays.stream(valuePart.split(",")).map(elementParser).collect(Collectors.toList());
     }
+}
+
+class Flag {
+    private final char name;
+
+    Flag(char name) {
+        this.name = name;
+    }
+
+    char getName() {
+        return name;
+    }
+}
+
+class Value {
+    private final Object value;
+
+    Value(Object value) {
+        this.value = value;
+    }
+
+    Object getValue() {
+        return value;
+    }
+}
+
+class Argument {
+    private Flag flag;
+    private ValueType type;
+    private Value value;
+
+    Argument(String segment) {
+        this.flag = new Flag(getSchemaPart(segment, 0).charAt(0));
+        this.type = new ValueType(getSchemaPart(segment, 1));
+        this.value = new Value(parseValue(getSchemaPart(segment, 2)));
+    }
+
+    private Object parseValue(String valuePart) {
+        return this.type.parseValue(valuePart);
+    }
 
     private String getSchemaPart(String segment, int i) {
         return trim(segment.split(":")[i]);
     }
 
     char getFlag() {
-        return flag;
+        return flag.getName();
     }
 
     <T> T getValue() {
-        return (T) value;
+        return (T) value.getValue();
     }
 
     void resolveValue(String commandLine) {
-        Pattern pattern = Pattern.compile("^.*-" + flag + "(?:\\s((?:[^-]|-\\d)+))?.*$");
-        Matcher matcher = pattern.matcher(commandLine);
-        if (!matcher.matches()) return;
-        this.value = isBooleanMissingValue(matcher) ? Boolean.valueOf(true) : parseValue(trim(matcher.group(1)));
+        matchValuePart(commandLine).ifPresent(x -> this.value = new Value(parseValue(trim(x))));
     }
 
-    private boolean isBooleanMissingValue(Matcher matcher) {
-        return StringUtils.equals(getType(), "boolean") && isBlank(matcher.group(1));
+    private Optional<String> matchValuePart(String commandLine) {
+        Matcher matcher = getPattern().matcher(commandLine);
+        return matcher.matches() ? Optional.of(defaultString(matcher.group(1))) : Optional.empty();
     }
 
-    private String getType() {
-        return type.getType();
-    }
-
-    private void setType(String type) {
-        this.type = new ValueType(type);
+    private Pattern getPattern() {
+        return Pattern.compile("^.*-" + getFlag() + "(?:\\s((?:[^-]|-\\d)+))?.*$");
     }
 }
