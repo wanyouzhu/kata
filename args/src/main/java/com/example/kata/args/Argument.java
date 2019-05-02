@@ -88,11 +88,10 @@ class Argument {
         Pattern pattern = Pattern.compile("^.*-" + flag + "(?:\\s((?:[^-]|-\\d)+))?.*$");
         Matcher matcher = pattern.matcher(commandLine);
         if (!matcher.matches()) return;
-        if (StringUtils.equals(type, "boolean") && isBlank(matcher.group(1))) {
-            this.value = true;
-        }
-        else {
-            this.value = parseValue(trim(matcher.group(1)));
-        }
+        this.value = isBooleanMissingValue(matcher) ? Boolean.valueOf(true) : parseValue(trim(matcher.group(1)));
+    }
+
+    private boolean isBooleanMissingValue(Matcher matcher) {
+        return StringUtils.equals(type, "boolean") && isBlank(matcher.group(1));
     }
 }
