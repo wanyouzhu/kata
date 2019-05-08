@@ -24,8 +24,8 @@ class Args {
         return arguments.size();
     }
 
-    <T> T getValue(char n) {
-        return getArgument(n).getValue();
+    <T> T getValue(char flag) {
+        return getArgument(flag).getValue();
     }
 
     private Argument getArgument(char flag) {
