@@ -1,15 +1,28 @@
 Tasks:
-* Parse arguments from schema
-    * check size: schema = "n:integer:1; v:integer:5" | commandLine = ""
-    * schema = "n:integer:8" | commandLine = ""
-    * schema = "v:boolean:false" | commandLine = ""
-    * schema = "v:boolean:true" | commandLine = ""
-    * schema = "v:boolean:malformed" | commandLine = ""
-    * schema = "o:string:a.txt" | commandLine = ""
-    * schema = "w:integers:1,2" | commandLine = ""
-    * schema = "i:strings:a.txt,b.txt" | commandLine = ""
-* Parse arguments from command
-    * schema = "v:integer:0" | commandLine = "-v 100"
-    * schema = "v:boolean:false" | commandLine = "-v"
-    * schema = "v:integer:0" | commandLine = "-v -5"
-    * schema = "p:integer:0; t:string:x; s:integers:0" | commandLine = "-p 8080 -t test -s 1,2,3"
+* Parse boolean arguments
+    * v:boolean | "-v true"
+    * v:boolean | "-v false"
+    * v:boolean | "-v"
+    * v:boolean | ""
+    * v:boolean | "-v not-a-boolean"
+* Parse integer arguments
+    * p:integer | "-p 8080"
+    * n:integer | "-n -10"
+    * n:integer | "-p"
+    * n:integer | ""
+    * n:integer | "-p not-an-integer"
+* Parse string arguments
+    * o:string | "-o game"
+    * o:string | "-o"
+    * o:string | ""
+* Parse integers arguments
+    * w:integers | "-w 1,2,3"
+    * w:integers | "-w -1,-2,-3"
+    * w:integers | "-w"
+    * w:integers | ""
+* Parse strings arguments
+    * i:strings | "-i a.lib,b.lib"
+    * i:strings | "-i"
+    * i:strings | ""
+* Parse multiple arguments
+    * v:boolean p:integer: o:integers | "-v -p -5 -w -1,-2"

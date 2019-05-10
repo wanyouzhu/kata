@@ -1,7 +1,7 @@
 package com.example.kata.args;
 
-class ArgsException extends RuntimeException {
-    ArgsException(String message) {
+public class ArgsException extends RuntimeException {
+    public ArgsException(String message) {
         super(message);
     }
 }
