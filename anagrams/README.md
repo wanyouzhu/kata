@@ -3,5 +3,4 @@ Tasks:
     * ab | ab ba -> ba 
     * ab | bb -> 
 * find anagrams for words in a file
-    * small
     * huge
