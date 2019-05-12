@@ -17,8 +17,4 @@ public class Word {
     public void write(WordWriter output) {
         output.write(word);
     }
-
-    public String get() {
-        return word;
-    }
 }
