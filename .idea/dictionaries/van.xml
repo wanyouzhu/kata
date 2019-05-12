@@ -4,6 +4,7 @@
       <w>abababab</w>
       <w>fizzbuzz</w>
       <w>nginx</w>
+      <w>wordlist</w>
     </words>
   </dictionary>
 </component>
