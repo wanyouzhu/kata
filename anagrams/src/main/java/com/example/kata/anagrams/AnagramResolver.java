@@ -1,4 +1,4 @@
-package com.example.kata.anagram;
+package com.example.kata.anagrams;
 
 public class AnagramResolver {
     private final Dictionary dictionary;

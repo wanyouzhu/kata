@@ -1,13 +1,15 @@
-package com.example.kata.anagram;
+package com.example.kata.anagrams;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@ToString
 @EqualsAndHashCode
 public class Word {
     private final String word;
 
-    public Word(String line) {
-        this.word = line;
+    public Word(String word) {
+        this.word = word;
     }
 
     public Index index() {

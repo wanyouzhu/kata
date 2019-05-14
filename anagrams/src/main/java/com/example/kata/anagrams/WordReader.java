@@ -1,12 +1,10 @@
-package com.example.kata.anagram;
+package com.example.kata.anagrams;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Consumer;
 
-public class WordReader implements Closeable {
+public class WordReader {
     private final BufferedReader input;
 
     public WordReader(Reader input) {
@@ -15,14 +13,5 @@ public class WordReader implements Closeable {
 
     public void readAll(Consumer<Word> consumer) {
         input.lines().map(Word::new).forEach(consumer);
-    }
-
-    @Override
-    public void close() {
-        try {
-            this.input.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
