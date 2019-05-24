@@ -3,15 +3,17 @@ You can find this kata here: http://codingdojo.org/kata/FizzBuzz/
 
 ### Tasks:
 
-- [ ] Print numbers
-    - [ ] 1 ... 100
-- [ ] Test if a number is fizz
-    - [ ] Numbers that is multiples of 3
-    - [ ] Numbers that contain 3
-- [ ] Test if a number is buzz
-    - [ ] Numbers that is multiples of 5
-    - [ ] Numbers that contain 5
-- [ ] Test if a number is fizzbuzz
-    - [ ] Numbers that is multiples of 3 and is multiples of 5
-- [ ] Test if a number is not fizz or buzz
-    - [ ] Numbers that is not multiples of 3 or 5 or nat contains 3 or 5
+* Generate 100 turn numbers
+    * () -> [1 ... 100] reports
+* Tag generated turn numbers
+    * 3 -> "3 Fizz"
+    * 5 -> "5 Buzz"
+    * 15 -> "15 FizzBuzz"
+    * 1 -> "1 1"
+    * 13 -> "13 Fizz"
+    * 31 -> "31 Fizz"
+    * 58 -> "58 Buzz"
+    * 57 -> "57 FizzBuzz"
+* Print the tagged turn numbers
+    * [report(1), report(2), report(3)] -> "1 1\n2 2\n 3 Fizz\n"
+
