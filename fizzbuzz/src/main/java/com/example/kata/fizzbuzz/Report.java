@@ -14,17 +14,21 @@ public class Report {
 
     private String tag() {
         if (isFizz() && isBuzz()) return "FizzBuzz";
-        if (isBuzz()) return "Buzz";
         if (isFizz()) return "Fizz";
+        if (isBuzz()) return "Buzz";
         return String.valueOf(turn);
     }
 
-    private boolean isFizz() {
-        return contains(3) || isDividableBy(3);
+    private boolean isBuzz() {
+        return isDividableByOrContains(5);
     }
 
-    private boolean isBuzz() {
-        return contains(5) || isDividableBy(5);
+    private boolean isFizz() {
+        return isDividableByOrContains(3);
+    }
+
+    private boolean isDividableByOrContains(int n) {
+        return contains(n) || isDividableBy(n);
     }
 
     private boolean contains(int n) {

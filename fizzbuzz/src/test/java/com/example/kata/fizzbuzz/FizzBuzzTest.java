@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class FizzBuzzTest {
     @Test
     public void should_report_100_turns() {
-        assertEquals(100, new FizzBuzz().run().getNumberOfReports());
+        ReportList reportList = new FizzBuzz().run();
+        assertEquals(100, reportList.getNumberOfReports());
     }
 }

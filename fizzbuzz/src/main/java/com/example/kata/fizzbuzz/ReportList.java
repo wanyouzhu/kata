@@ -1,22 +1,21 @@
 package com.example.kata.fizzbuzz;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReportList {
-    private final List<Report> reports;
+    private final Report[] reports;
 
     ReportList(Report... reports) {
-        this.reports = Arrays.asList(reports);
+        this.reports = reports;
     }
 
     int getNumberOfReports() {
-        return reports.size();
+        return reports.length;
     }
 
     @Override
     public String toString() {
-        return reports.stream().map(Report::toString).collect(Collectors.joining("\n"));
+        return Arrays.stream(reports).map(Report::toString).collect(Collectors.joining("\n"));
     }
 }
