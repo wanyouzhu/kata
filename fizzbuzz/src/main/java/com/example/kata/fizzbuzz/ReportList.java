@@ -3,7 +3,7 @@ package com.example.kata.fizzbuzz;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ReportList {
+class ReportList {
     private final Report[] reports;
 
     ReportList(Report... reports) {

@@ -16,4 +16,3 @@ You can find this kata here: http://codingdojo.org/kata/FizzBuzz/
     * 57 -> "57 FizzBuzz"
 * Print the tagged turn numbers
     * [report(1), report(2), report(3)] -> "1 1\n2 2\n 3 Fizz\n"
-

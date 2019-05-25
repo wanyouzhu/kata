@@ -13,29 +13,21 @@ public class Report {
     }
 
     private String tag() {
-        if (isFizz() && isBuzz()) return "FizzBuzz";
-        if (isFizz()) return "Fizz";
-        if (isBuzz()) return "Buzz";
+        if (isDividableByOrContains(3) && isDividableByOrContains(5)) return "FizzBuzz";
+        if (isDividableByOrContains(3)) return "Fizz";
+        if (isDividableByOrContains(5)) return "Buzz";
         return String.valueOf(turn);
     }
 
-    private boolean isBuzz() {
-        return isDividableByOrContains(5);
-    }
-
-    private boolean isFizz() {
-        return isDividableByOrContains(3);
-    }
-
-    private boolean isDividableByOrContains(int n) {
-        return contains(n) || isDividableBy(n);
+    private boolean isDividableByOrContains(int i) {
+        return contains(i) || isDividableBy(i);
     }
 
     private boolean contains(int n) {
         return turn % 10 == n || turn / 10 == n;
     }
 
-    private boolean isDividableBy(int n) {
-        return turn % n == 0;
+    private boolean isDividableBy(int i) {
+        return turn % i == 0;
     }
 }
