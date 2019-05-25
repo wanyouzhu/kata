@@ -3,8 +3,8 @@ package com.example.kata.fizzbuzz;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class FizzBuzz {
-    String print() {
+public class FizzBuzz {
+    public String print() {
         return IntStream.range(1, 101).mapToObj(this::tag).collect(Collectors.joining("\n"));
     }
 
@@ -16,15 +16,11 @@ class FizzBuzz {
     }
 
     private boolean isFizz(int turn) {
-        return isDividableByOrContains(turn, 3);
+        return isDividableBy(turn, 3) || contains(turn, 3);
     }
 
     private boolean isBuzz(int turn) {
-        return isDividableByOrContains(turn, 5);
-    }
-
-    private boolean isDividableByOrContains(int turn, int n) {
-        return contains(turn, n) || isDividableBy(turn, n);
+        return isDividableBy(turn, 5) || contains(turn, 5);
     }
 
     private boolean contains(int turn, int n) {
