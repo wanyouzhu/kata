@@ -1,0 +1,7 @@
+SpringSecurity.filter() {
+    AuthFilter.filter() {
+        AccessTokenIdExtractor.extract(request)
+        AuthApplicationService.retrieveAccessToken() {
+        }
+    }
+}

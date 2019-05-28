@@ -1,26 +1,24 @@
 package com.example.kata.fizzbuzz;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FizzBuzzTest {
     @Test
-    public void should_print_fizz_buzz_list_correctly() {
-        assertEquals(100, splitOutput().length);
-        assertEquals("1", getOutputLine(1));
-        assertEquals("Fizz", getOutputLine(3));
-        assertEquals("Buzz", getOutputLine(5));
-        assertEquals("FizzBuzz", getOutputLine(15));
-        assertEquals("Fizz", getOutputLine(13));
-        assertEquals("Buzz", getOutputLine(52));
+    void should_print_100_lines() {
+        assertThat(getOutput().length).isEqualTo(100);
     }
 
-    private String getOutputLine(int n) {
-        return splitOutput()[n - 1];
+    @ParameterizedTest(name = "line content should be {1} for turn {0}")
+    @CsvSource({"1,1", "3,Fizz", "5,Buzz", "15,FizzBuzz", "13,Fizz", "52,Buzz", "53,FizzBuzz"})
+    void line_content_should_be_correct(int turn, String expect) {
+        assertThat(getOutput()[turn - 1]).isEqualTo(expect);
     }
 
-    private String[] splitOutput() {
+    private String[] getOutput() {
         return new FizzBuzz().print().split("\n");
     }
 }

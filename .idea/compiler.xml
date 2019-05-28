@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="anagram" />
+        <module name="fizzbuzz" />
         <module name="anagrams" />
         <module name="args" />
-        <module name="fizzbuzz" />
+        <module name="anagram" />
       </profile>
     </annotationProcessing>
   </component>

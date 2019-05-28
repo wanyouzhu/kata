@@ -14,4 +14,4 @@ You can find this kata here: http://codingdojo.org/kata/FizzBuzz/
 * 15 -> "FizzBuzz"
 * 13 -> "Fizz"
 * 52 -> "Buzz"
-* 35 -> "FizzBuzz"
+* 53 -> "FizzBuzz"
