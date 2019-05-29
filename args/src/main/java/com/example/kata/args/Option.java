@@ -1,28 +1,11 @@
 package com.example.kata.args;
 
-public abstract class Option {
-    protected final Flag flag;
+public class Option {
+    private final char flag;
+    private final BooleanType type;
 
-    protected Option(char flag) {
-        this.flag = Flag.of(flag);
+    public Option(char flag, BooleanType type) {
+        this.flag = flag;
+        this.type = type;
     }
-
-    public Argument match(CommandLineInput input) {
-        return new Argument(flag, parseValue(input.match(flag)));
-    }
-
-    protected Object parseValue(Segment segment) {
-        return segment.isEmpty() ? getDefaultValue() : parseCheckedValue(segment);
-    }
-
-    private Object parseCheckedValue(Segment segment) {
-        checkSegment(segment);
-        return parseActualValue(segment);
-    }
-
-    protected abstract void checkSegment(Segment segment);
-
-    protected abstract Object getDefaultValue();
-
-    protected abstract Object parseActualValue(Segment segment);
 }
